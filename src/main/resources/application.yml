@@ -1,0 +1,31 @@
+server.port: 8000
+
+spring:
+  application.name: aws
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=public
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        stringtype: unspecified
+  jpa:
+    hibernate:
+      ddl-auto: none
+  main:
+    allow-bean-definition-overriding: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_KEY}
+      secret-key: ${AWS_SECRET}
+    region:
+      static: us-east-1
+      auto: false
+
+
+sqs:
+  queue-name: StatusQueue.fifo
+  token: ${AWS_TOKEN}

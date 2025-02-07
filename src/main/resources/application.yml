@@ -12,16 +12,16 @@ spring:
         stringtype: unspecified
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
   main:
     allow-bean-definition-overriding: true
 
 cloud:
   aws:
     credentials:
-      access-key:
-      secret-key:
-      token:
+      access-key: ${AWS_KEY}
+      secret-key: ${AWS_SECRET}
+      token: ${AWS_TOKEN}
       account-id:
     region:
       static: us-east-1

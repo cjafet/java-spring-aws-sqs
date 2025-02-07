@@ -27,39 +27,39 @@ dependencyManagement {
 	}
 }
 
-
 dependencies {
+	// Spring Boot Starters
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE'
-	implementation("org.springframework.cloud:spring-cloud-aws-autoconfigure:2.2.6.RELEASE")
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-devtools'
 
+	// Spring Cloud AWS
+	implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1')
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.0'
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.3.0'
+	implementation 'software.amazon.awssdk:sns'
+	implementation 'com.amazonaws:aws-java-sdk-sns:1.12.196'
+
+
+
+	// ModelMapper
 	implementation 'org.modelmapper:modelmapper:3.2.0'
-	implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 
-	//	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config'
-
-	// S3 AWS SDK
-	implementation 'software.amazon.awssdk:s3'
-
-	implementation 'com.amazonaws:aws-java-sdk-core:1.12.780'
+	// Logging
+	implementation 'net.logstash.logback:logstash-logback-encoder:8.0'
 
 	// Swagger for API documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-	// Spring Data REST (optional, if you need it for REST endpoints)
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest:3.3.5'
-
-	//pacote spring cloudaws
-	implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1')
-
-
+	// Lombok
 	compileOnly 'org.projectlombok:lombok:1.18.36'
 	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+	// Database
 	implementation 'org.postgresql:postgresql'
 
-	testImplementation("io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
+	// Test Dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

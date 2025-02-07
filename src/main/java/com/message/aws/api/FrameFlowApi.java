@@ -1,5 +1,6 @@
 package com.message.aws.api;
 
+import com.message.aws.model.dto.UserVideosDTO;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +39,19 @@ public interface FrameFlowApi {
                     content = @Content)})
 
     public ResponseEntity<Resource> downloadFile();
+
+
+
+
+    @GetMapping("videos/user/{id}")
+    @Operation(summary = "list viedos by user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Videos de usuário listados com sucesso",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "500", description = "Erro ao listar vídeos de usuário",
+                    content = @Content)})
+
+    public ResponseEntity<List<UserVideosDTO>> listVideosByUser(@PathVariable("id") Long userId);
+
 }

@@ -1,6 +1,8 @@
 package com.message.aws.driver.controller;
 
 import com.message.aws.api.FrameFlowApi;
+import com.message.aws.model.dto.UserVideosDTO;
+import com.message.aws.service.impl.VideoServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -28,6 +31,9 @@ public class FrameFlowController implements FrameFlowApi {
 
     @Autowired
     private S3Client s3Client;
+
+    @Autowired
+    private VideoServiceImpl videoServiceImpl;
 
     @Value("${s3.bucket-video-original}")
     private String BUCKET_NAME;
@@ -85,8 +91,17 @@ public class FrameFlowController implements FrameFlowApi {
         }
     }
 
+
+
     //Todo: implementar API nova para listagem de requisicoes de videos por usuario com autenticacao via token
     //1. Anexar token na API de listagem(parametros da requisição)
     //2. Implementar a consulta da listagem de videos + status a partir do token
+
+    @Override
+    public ResponseEntity<List<UserVideosDTO>> listVideosByUser(Long userId) {
+        return ResponseEntity.ok()
+                .body(videoServiceImpl.getVideosByUser(userId));
+    }
+
 
 }

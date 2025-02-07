@@ -25,6 +25,7 @@ public class SQSConfig {
 
     @Bean
     public AmazonSQS amazonSQSClient() {
+
         BasicSessionCredentials awsCredentials = new BasicSessionCredentials(accessKeyId, secretAccessKey, token);
         return AmazonSQSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))

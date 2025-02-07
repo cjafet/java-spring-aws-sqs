@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SQSListener {
 
-    @Value("${sqs.queue-name}")
+    @Value("${sqs.queue-name-consumer}")
     private String queueName;
 
     private final AmazonSQS amazonSQSClient;

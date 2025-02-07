@@ -15,17 +15,17 @@ import org.springframework.context.annotation.Configuration;
 public class SQSConfig {
 
     @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
+    private String accessKeyId ;
 
     @Value("${cloud.aws.credentials.secret-key}")
-    private String secretKey;
+    private String secretAccessKey ;
 
-    @Value("${sqs.token}")
+    @Value("${cloud.aws.credentials.token}")
     private String token;
 
     @Bean
     public AmazonSQS amazonSQSClient() {
-        BasicSessionCredentials awsCredentials = new BasicSessionCredentials(accessKey, secretKey, token);
+        BasicSessionCredentials awsCredentials = new BasicSessionCredentials(accessKeyId, secretAccessKey, token);
         return AmazonSQSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withRegion(Regions.US_EAST_1)
@@ -39,7 +39,7 @@ public class SQSConfig {
                 "us-east-1"
         );
 
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
 
         return AmazonSQSAsyncClientBuilder
                 .standard()

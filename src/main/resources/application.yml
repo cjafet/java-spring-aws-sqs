@@ -19,13 +19,20 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_KEY}
-      secret-key: ${AWS_SECRET}
+      access-key:
+      secret-key:
+      token:
+      account-id:
     region:
       static: us-east-1
       auto: false
 
+sns:
+  topic: video-carregado-topic.fifo
 
 sqs:
-  queue-name: StatusQueue.fifo
-  token: ${AWS_TOKEN}
+  queue-name-consumer: video-status-subscriber-queue.fifo
+
+S3:
+  bucket-video-original: original-video-bucket
+  bucket-frames: frames-video-bucket

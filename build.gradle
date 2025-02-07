@@ -34,7 +34,22 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE'
 	implementation("org.springframework.cloud:spring-cloud-aws-autoconfigure:2.2.6.RELEASE")
-//	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config'
+	//	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config'
+
+	// S3 AWS SDK
+	implementation 'software.amazon.awssdk:s3'
+
+	implementation 'com.amazonaws:aws-java-sdk-core:1.12.780'
+
+	// Swagger for API documentation
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+	// Spring Data REST (optional, if you need it for REST endpoints)
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest:3.3.5'
+
+	//pacote spring cloudaws
+	implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1')
+
 
 	compileOnly 'org.projectlombok:lombok:1.18.36'
 	annotationProcessor 'org.projectlombok:lombok:1.18.36'

@@ -1,14 +1,11 @@
 package com.message.aws.configuration;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -31,15 +28,13 @@ public class S3Config {
 
     String regionName = Region.US_EAST_1.toString();
 
-    AwsCredentials credentials = AwsSessionCredentials.create(accessKeyId, secretAccessKey,token);
-
 
     @Bean
     public S3Client getS3Client() {
         return S3Client
                 .builder()
                 .region(Region.of(regionName))
-                .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsSessionCredentials.create(accessKeyId, secretAccessKey,token)))
                 .build();
     }
 

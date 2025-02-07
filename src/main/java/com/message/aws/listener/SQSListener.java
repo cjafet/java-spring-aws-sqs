@@ -26,12 +26,6 @@ public class SQSListener {
         this.amazonSQSAsync = amazonSQSAsync;
     }
 
-    @SqsListener(value = "StatusQueue")
-    public void onStatusEvent(String rawMessage) {
-        log.info("Incoming EventStatusNoticiation: {}", rawMessage);
-
-    }
-
     // Runs every 5 seconds.
     @Scheduled(fixedDelay = 5000)
     public void consumeMessages() {

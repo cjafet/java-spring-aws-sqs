@@ -40,7 +40,7 @@ public class SQSConfig {
                 "us-east-1"
         );
 
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+        BasicSessionCredentials awsCredentials = new BasicSessionCredentials(accessKeyId, secretAccessKey, token);
 
         return AmazonSQSAsyncClientBuilder
                 .standard()

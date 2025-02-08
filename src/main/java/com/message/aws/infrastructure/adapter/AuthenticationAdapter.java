@@ -18,8 +18,7 @@ public class AuthenticationAdapter implements AuthenticationPort {
         try {
             return authorizationHeader != null && !authorizationHeader.trim().isEmpty() &&
                     authorizationHeader.regionMatches(true, 0, bearerPrefix, 0, bearerPrefix.length()) &&
-                    authorizationHeader.length() > bearerPrefix.length() &&
-                    !validateIsTokenExpired(authorizationHeader.substring(bearerPrefix.length()).trim());
+                    authorizationHeader.length() > bearerPrefix.length();
         } catch (Exception ex) {
             return false;
         }

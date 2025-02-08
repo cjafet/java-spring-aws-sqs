@@ -68,17 +68,13 @@ public class FrameFlowController implements FrameFlowApi {
     @Override
     public ResponseEntity<String> uploadFile(MultipartFile file, String authorizationHeader) {
 
-        if (Boolean.TRUE.equals(authenticationPort.validateAuthorizationHeader(authorizationHeader))) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token não fornecido ou inválido");
-        }
-
         UserDTO userDTO = jwtUtil.getUser(authorizationHeader);
 
         VideoMessagePublisher videoMessagePublisher = new VideoMessagePublisher();
         String key = file.getOriginalFilename();
 
         UserVideosDTO userVideosDTO = new UserVideosDTO(null, VideoStatus.PENDING, key, userDTO.getId());
-        UserVideosDTO savedUserVideo = databasePort.createVideo(userVideosDTO);
+        UserVideosDTO savedUserVideo = databasePort.saveOrUpdateVideo(userVideosDTO);
 
         StatusDTO statusDTO = new StatusDTO(null, VideoStatus.PENDING, key, Instant.now().toString(), null, userDTO.getId(), savedUserVideo.getId());
         StatusDTO savedStatusDTO = databasePort.saveOrUpdateVideoStatus(statusDTO);
@@ -129,9 +125,9 @@ public class FrameFlowController implements FrameFlowApi {
 
             savedStatusDTO.setStatus(VideoStatus.IN_PROGRESS);
             savedStatusDTO.setModifiedDate(Instant.now().toString());
-            databasePort.saveOrUpdateVideoStatus(statusDTO);
+            databasePort.saveOrUpdateVideoStatus(savedStatusDTO);
 
-            videoMessagePublisher.setId("1");
+            videoMessagePublisher.setId(savedUserVideo.getId().toString());
             videoMessagePublisher.setEmail(userDTO.getEmail());
             videoMessagePublisher.setUser(userDTO.getUsername());
             videoMessagePublisher.setIntervalSeconds("5");

@@ -24,9 +24,8 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails, String requestURI) {
         final String username = extractUsername(token);
-        final Long userId = extractUserId(userDetails, requestURI);
 
-        return (username.equals(userDetails.getUsername()) && userId.equals(userId));
+        return (username.equals(userDetails.getUsername()));
     }
 
     @Override

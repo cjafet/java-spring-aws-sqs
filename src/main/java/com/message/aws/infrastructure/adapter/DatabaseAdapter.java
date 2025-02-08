@@ -39,7 +39,7 @@ public class DatabaseAdapter implements DatabasePort {
     }
 
     @Override
-    public UserVideosDTO createVideo(UserVideosDTO userVideosDTO) {
+    public UserVideosDTO saveOrUpdateVideo(UserVideosDTO userVideosDTO) {
         VideoEntity videoEntity = modelMapper.map(userVideosDTO, VideoEntity.class);
         VideoEntity savedVideoEntity = videoRepository.save(videoEntity);
         return modelMapper.map(savedVideoEntity, UserVideosDTO.class);
@@ -56,6 +56,12 @@ public class DatabaseAdapter implements DatabasePort {
     public Optional<StatusDTO> getStatusByVideoId(Long videoId) {
         Optional<StatusEntity> statusEntity = statusRepository.findByVideoId(videoId);
         return Optional.ofNullable(modelMapper.map(statusEntity, StatusDTO.class));
+    }
+
+    @Override
+    public Optional<UserVideosDTO> getVideoById(Long videoId) {
+        Optional<VideoEntity> videoEntity = videoRepository.findById(videoId);
+        return Optional.ofNullable(modelMapper.map(videoEntity, UserVideosDTO.class));
     }
 
 }

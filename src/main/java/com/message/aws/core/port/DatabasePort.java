@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface DatabasePort {
     StatusDTO saveOrUpdateVideoStatus(StatusDTO statusDTO);
-    UserVideosDTO createVideo(UserVideosDTO userVideosDTO);
+    UserVideosDTO saveOrUpdateVideo(UserVideosDTO userVideosDTO);
     Optional<UserDTO> getUserByEmail(String email);
     Optional<StatusDTO> getStatusByVideoId(Long videoId);
+    Optional<UserVideosDTO> getVideoById(Long videoId);
 }

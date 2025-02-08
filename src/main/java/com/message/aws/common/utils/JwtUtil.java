@@ -15,6 +15,12 @@ public class JwtUtil {
         return JWT.decode(cleanToken);
     }
 
+    public Long getIdFromToken(String token) {
+        DecodedJWT decodedJWT = decodeToken(token);
+
+        return decodedJWT.getClaim("id").asLong();
+    }
+
     public String getNameFromToken(String token) {
         DecodedJWT decodedJWT = decodeToken(token);
 
@@ -30,6 +36,7 @@ public class JwtUtil {
     public UserDTO getUser(String token){
         UserDTO user = new UserDTO();
 
+        user.setId(getIdFromToken(token));
         user.setUsername(getNameFromToken(token));
         user.setEmail(getEmailFromToken(token));
 

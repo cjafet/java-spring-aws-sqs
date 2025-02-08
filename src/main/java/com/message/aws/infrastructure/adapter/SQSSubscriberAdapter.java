@@ -3,6 +3,7 @@ package com.message.aws.infrastructure.adapter;
 import com.message.aws.core.model.domain.VideoMessageSubscriber;
 import com.message.aws.core.model.dto.StatusDTO;
 import com.message.aws.core.model.dto.UserDTO;
+import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.enums.VideoStatus;
 import com.message.aws.core.port.SQSSubscriberPort;
 import io.awspring.cloud.sqs.annotation.SqsListener;
@@ -61,18 +62,19 @@ public class SQSSubscriberAdapter implements SQSSubscriberPort {
     }
 
     private void updateVideoStatus(VideoMessageSubscriber videoMessagePublisher) {
-        Optional<UserDTO> userDTO = databaseAdapter.getUserByEmail(videoMessagePublisher.getEmail());
-        Long userId = userDTO.get().getId();
-        Optional<StatusDTO> statusId = databaseAdapter.getStatusByVideoId(Long.valueOf(videoMessagePublisher.getId()));
+        Optional<StatusDTO> savedStatusDTO = databaseAdapter.getStatusByVideoId(Long.valueOf(videoMessagePublisher.getId()));
 
-        StatusDTO statusDTO = new StatusDTO(statusId.get().getId(),
-                VideoStatus.valueOf(videoMessagePublisher.getStatus()),
-                videoMessagePublisher.getVideoKeyS3(),
-                null,
-                Instant.now().toString(),
-                userId,
-                Long.valueOf(videoMessagePublisher.getId()));
+        if (savedStatusDTO.isPresent()) {
+            savedStatusDTO.get().setStatus(VideoStatus.valueOf(videoMessagePublisher.getStatus()));
+            savedStatusDTO.get().setModifiedDate(java.time.Instant.now().toString());
 
-        databaseAdapter.saveOrUpdateVideoStatus(statusDTO);
+            databaseAdapter.saveOrUpdateVideoStatus(savedStatusDTO.get());
+
+            Long videoId = savedStatusDTO.get().getVideoId();
+            Optional<UserVideosDTO> userVideosDTO = databaseAdapter.getVideoById(videoId);
+
+            userVideosDTO.get().setVideoStatus(VideoStatus.valueOf(videoMessagePublisher.getStatus()));
+            databaseAdapter.saveOrUpdateVideo(userVideosDTO.get());
+        }
     }
 }

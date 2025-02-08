@@ -1,14 +1,14 @@
 package com.message.aws.driver.controller;
 
-import com.message.aws.api.FrameFlowApi;
-import com.message.aws.configuration.S3Config;
-import com.message.aws.model.domain.VideoMessagePublisher;
-import com.message.aws.model.dto.UserDTO;
-import com.message.aws.model.dto.UserVideosDTO;
-import com.message.aws.port.AuthenticationPort;
-import com.message.aws.port.SNSProcessorPort;
-import com.message.aws.service.impl.VideoServiceImpl;
-import com.message.aws.utils.JwtUtil;
+import com.message.aws.driver.api.FrameFlowApi;
+import com.message.aws.infrastructure.configuration.S3Config;
+import com.message.aws.core.model.domain.VideoMessagePublisher;
+import com.message.aws.core.model.dto.UserDTO;
+import com.message.aws.core.model.dto.UserVideosDTO;
+import com.message.aws.core.port.AuthenticationPort;
+import com.message.aws.core.port.SNSProcessorPort;
+import com.message.aws.core.port.services.VideoServiceImpl;
+import com.message.aws.common.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -153,11 +153,6 @@ public class FrameFlowController implements FrameFlowApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado");
         }
     }
-
-
-    //Todo: implementar API nova para listagem de requisicoes de videos por usuario com autenticacao via token
-    //1. Anexar token na API de listagem(parametros da requisição)
-    //2. Implementar a consulta da listagem de videos + status a partir do token
 
     @Override
     public ResponseEntity<List<UserVideosDTO>> listVideosByUser(Long userId) {

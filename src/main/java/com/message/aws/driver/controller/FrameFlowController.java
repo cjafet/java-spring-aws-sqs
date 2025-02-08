@@ -91,12 +91,6 @@ public class FrameFlowController implements FrameFlowApi {
         }
     }
 
-
-
-    //Todo: implementar API nova para listagem de requisicoes de videos por usuario com autenticacao via token
-    //1. Anexar token na API de listagem(parametros da requisição)
-    //2. Implementar a consulta da listagem de videos + status a partir do token
-
     @Override
     public ResponseEntity<List<UserVideosDTO>> listVideosByUser(Long userId) {
         return ResponseEntity.ok()

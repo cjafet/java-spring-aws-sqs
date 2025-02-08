@@ -12,9 +12,11 @@ import com.message.aws.core.port.repository.UserRepository;
 import com.message.aws.core.port.repository.VideoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class DatabaseAdapter implements DatabasePort {
 
     @Autowired

@@ -7,7 +7,7 @@ import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.port.AuthenticationPort;
 import com.message.aws.core.port.SNSProcessorPort;
-import com.message.aws.core.port.services.VideoServiceImpl;
+import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,6 +70,7 @@ public class FrameFlowController implements FrameFlowApi {
         VideoMessagePublisher videoMessagePublisher = new VideoMessagePublisher();
         String key = file.getOriginalFilename();
 
+//TODO Cadastrar video no db aqui vai subir para o s3
         try {
             CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
                     .bucket(bucketVideoName)
@@ -114,9 +115,11 @@ public class FrameFlowController implements FrameFlowApi {
 
             s3Config.getS3Client().completeMultipartUpload(completeRequest);
 
+            //TODO atualizar video no db aqui vai publicar o video para cortes
+
             videoMessagePublisher.setId("1");
             videoMessagePublisher.setEmail(userDTO.getEmail());
-            videoMessagePublisher.setUser(userDTO.getName());
+            videoMessagePublisher.setUser(userDTO.getUsername());
             videoMessagePublisher.setIntervalSeconds("5");
             videoMessagePublisher.setVideoKeyS3(key);
             snsProcessorPort.publishMessage(videoMessagePublisher);
@@ -134,6 +137,7 @@ public class FrameFlowController implements FrameFlowApi {
     public ResponseEntity<Resource> downloadFile(String videoKeyName, String authorizationHeader) {
         String fileName = videoKeyName.replace(".mp4", ".zip");
 
+
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketZipName)
                 .key(fileName)
@@ -144,12 +148,17 @@ public class FrameFlowController implements FrameFlowApi {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(getObjectResponse.readAllBytes());
             Resource resource = new InputStreamResource(byteArrayInputStream);
 
+            //TODO Atualizar banco de dados como COMPLETED e com o videoKeyName
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, getObjectResponse.response().contentType())
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(resource);
+
         } catch (S3Exception | IOException e) {
             log.error("Erro ao fazer download do arquivo: {}", e.getMessage());
+            //TODO Atualizar banco de dados como ERROR_PROCESSING
+
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado");
         }
     }

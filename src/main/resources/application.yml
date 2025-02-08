@@ -26,13 +26,13 @@ cloud:
       access-key: ${AWS_KEY}
       secret-key: ${AWS_SECRET}
       token: ${AWS_TOKEN}
-      account-id: =
+      account-id: 992751745486
     region:
       static: us-east-1
       auto: false
 
 sns:
-  topic:
+  topic: arn:aws:sns:us-east-1:992751745486:video-carregado-topic.fifo
 
 sqs:
   queue-name-consumer: frameFlowQueue.fifo

@@ -1,6 +1,6 @@
 package com.message.aws.infrastructure.security;
 
-import com.message.aws.application.service.JwtService;
+import com.message.aws.application.service.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtService jwtService;
+    private JwtServiceImpl jwtServiceImpl;
 
     @Autowired
     UserDetailsServiceImpl userDetailsServiceImpl;
@@ -32,12 +32,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = null;
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            username = jwtServiceImpl.extractUsername(token);
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-            if(jwtService.isTokenValid(token, userDetails, request.getRequestURI())){
+            if(jwtServiceImpl.isTokenValid(token, userDetails, request.getRequestURI())){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

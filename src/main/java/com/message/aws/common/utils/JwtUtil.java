@@ -30,7 +30,7 @@ public class JwtUtil {
     public UserDTO getUser(String token){
         UserDTO user = new UserDTO();
 
-        user.setName(getNameFromToken(token));
+        user.setUsername(getNameFromToken(token));
         user.setEmail(getEmailFromToken(token));
 
         return user;

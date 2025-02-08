@@ -1,18 +1,15 @@
 package com.message.aws.driver.controller;
 
-import com.message.aws.core.model.domain.VideoMessagePublisher;
 import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.enums.VideoStatus;
 import com.message.aws.core.port.AuthenticationPort;
 import com.message.aws.core.port.SNSProcessorPort;
-import com.message.aws.core.port.services.VideoServiceImpl;
+import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
 import com.message.aws.infrastructure.configuration.S3Config;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,16 +57,13 @@ class FrameFlowControllerTest {
 
     @Test
     void testUploadFileUnauthorized() {
-        // Arrange
         MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
         String authorizationHeader = "Bearer invalid-token";
 
         when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
 
-        // Act
         ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
 
-        // Assert
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Token não fornecido ou inválido", response.getBody());
     }
@@ -81,7 +75,7 @@ class FrameFlowControllerTest {
         String authorizationHeader = "Bearer valid-token";
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail("test@example.com");
-        userDTO.setName("Test User");
+        userDTO.setUsername("Test User");
 
         when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(false);
         when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);

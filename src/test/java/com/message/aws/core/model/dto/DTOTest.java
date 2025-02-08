@@ -36,7 +36,7 @@ class DTOTest {
         UserDTO userDTO = new UserDTO(3L, "Maria Silva", "maria.silva@example.com");
 
         assertEquals(3L, userDTO.getId());
-        assertEquals("Maria Silva", userDTO.getName());
+        assertEquals("Maria Silva", userDTO.getUsername());
         assertEquals("maria.silva@example.com", userDTO.getEmail());
     }
 
@@ -44,11 +44,11 @@ class DTOTest {
     void testUserDTO_SettersAndGetters() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(4L);
-        userDTO.setName("Carlos Souza");
+        userDTO.setUsername("Carlos Souza");
         userDTO.setEmail("carlos.souza@example.com");
 
         assertEquals(4L, userDTO.getId());
-        assertEquals("Carlos Souza", userDTO.getName());
+        assertEquals("Carlos Souza", userDTO.getUsername());
         assertEquals("carlos.souza@example.com", userDTO.getEmail());
     }
 

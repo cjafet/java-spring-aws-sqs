@@ -1,5 +1,6 @@
 package com.message.aws.core.port.services;
 
+import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.entity.VideoEntity;
 import com.message.aws.core.port.repository.VideoRepository;

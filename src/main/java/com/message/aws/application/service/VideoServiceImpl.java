@@ -1,9 +1,9 @@
-package com.message.aws.core.port.services;
+package com.message.aws.application.service;
 
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.entity.VideoEntity;
 import com.message.aws.core.port.repository.VideoRepository;
-import com.message.aws.application.service.VideoService;
+import com.message.aws.core.port.services.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

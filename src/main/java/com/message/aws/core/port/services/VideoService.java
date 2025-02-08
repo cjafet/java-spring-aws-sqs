@@ -1,4 +1,4 @@
-package com.message.aws.application.service;
+package com.message.aws.core.port.services;
 
 import com.message.aws.core.model.dto.UserVideosDTO;
 

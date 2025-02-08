@@ -2,7 +2,9 @@ package com.message.aws.core.model.entity;
 
 import com.message.aws.core.model.enums.VideoStatus;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "status")
 public class Status {

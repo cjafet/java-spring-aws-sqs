@@ -2,7 +2,7 @@ package com.message.aws.application.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.message.aws.infrastructure.security.TokenPayload;
+import com.message.aws.security.TokenPayload;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 

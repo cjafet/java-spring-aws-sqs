@@ -12,7 +12,8 @@ import java.util.Collection;
 @Data
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_generator")
+    @SequenceGenerator(name = "users_generator", sequenceName = "users_id_sequence", allocationSize = 1)
     private Long id;
 
     @Column(name = "username")

@@ -3,7 +3,7 @@ package com.message.aws.infrastructure.adapter;
 import com.message.aws.infrastructure.configuration.SNSConfig;
 import com.message.aws.common.exceptions.SNSPublishingException;
 import com.message.aws.core.model.domain.VideoMessagePublisher;
-import com.message.aws.core.port.SNSProcessorPort;
+import com.message.aws.core.port.SNSPublisherPort;
 
 import com.amazonaws.services.sns.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class SNSPublisherAdapter implements SNSProcessorPort {
+public class SNSPublisherAdapter implements SNSPublisherPort {
 
     private final SNSConfig snsConfig;
     private final Topic productEventsTopic;

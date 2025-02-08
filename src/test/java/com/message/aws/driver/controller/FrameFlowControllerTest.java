@@ -4,9 +4,10 @@ import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.enums.VideoStatus;
 import com.message.aws.core.port.AuthenticationPort;
-import com.message.aws.core.port.SNSProcessorPort;
+import com.message.aws.core.port.SNSPublisherPort;
 import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
+import com.message.aws.core.port.DatabasePort;
 import com.message.aws.infrastructure.configuration.S3Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +37,9 @@ class FrameFlowControllerTest {
     private FrameFlowController frameFlowController;
     private S3Config s3Config;
     private VideoServiceImpl videoServiceImpl;
-    private SNSProcessorPort snsProcessorPort;
+    private SNSPublisherPort snsPublisherPort;
     private AuthenticationPort authenticationPort;
+    private DatabasePort databasePort;
     private JwtUtil jwtUtil;
     private S3Client s3Client;
 
@@ -45,14 +47,15 @@ class FrameFlowControllerTest {
     void setUp() {
         s3Config = mock(S3Config.class);
         videoServiceImpl = mock(VideoServiceImpl.class);
-        snsProcessorPort = mock(SNSProcessorPort.class);
+        snsPublisherPort = mock(SNSPublisherPort.class);
         authenticationPort = mock(AuthenticationPort.class);
+        databasePort = mock(DatabasePort.class);
         jwtUtil = mock(JwtUtil.class);
         s3Client = mock(S3Client.class);
 
         when(s3Config.getS3Client()).thenReturn(s3Client);
 
-        frameFlowController = new FrameFlowController(s3Config, videoServiceImpl, snsProcessorPort, authenticationPort, jwtUtil);
+        frameFlowController = new FrameFlowController(s3Config, videoServiceImpl, snsPublisherPort, authenticationPort, jwtUtil, databasePort);
     }
 
     @Test
@@ -145,7 +148,7 @@ class FrameFlowControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
-        assertEquals("http://example.com/video1.mp4", response.getBody().get(0).getVideoUrl());
-        assertEquals("http://example.com/video2.mp4", response.getBody().get(1).getVideoUrl());
+        assertEquals("http://example.com/video1.mp4", response.getBody().get(0).getVideoKey());
+        assertEquals("http://example.com/video2.mp4", response.getBody().get(1).getVideoKey());
     }
 }

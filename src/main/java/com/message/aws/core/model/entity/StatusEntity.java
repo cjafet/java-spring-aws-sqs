@@ -7,14 +7,15 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "status")
-public class Status {
+public class StatusEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
     private VideoStatus status;
-    private String videoUrl;
+    private String videoKey;
     private String createdDate;
     private String modifiedDate;
     private Long userId;
+    private Long videoId;
 }

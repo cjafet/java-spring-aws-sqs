@@ -2,7 +2,7 @@ package com.message.aws.application.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.message.aws.core.model.entity.User;
+import com.message.aws.core.model.entity.UserEntity;
 import com.message.aws.core.port.services.JwtService;
 import com.message.aws.infrastructure.security.TokenPayload;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +38,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Long extractUserId(UserDetails userDetails, String requestURI) {
-        User user = (User) userDetails;
+        UserEntity userEntity = (UserEntity) userDetails;
         String[] requestPath = requestURI.split("/");
         return Long.parseLong(requestPath[requestPath.length-1]);
     }

@@ -10,7 +10,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 @Data
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_generator")
     @SequenceGenerator(name = "users_generator", sequenceName = "users_id_sequence", allocationSize = 1)

@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 @Hidden
 public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
-
     List<VideoEntity> findAllByUserId(Long userId);
 }

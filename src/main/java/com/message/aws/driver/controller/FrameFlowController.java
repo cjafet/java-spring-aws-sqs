@@ -1,12 +1,15 @@
 package com.message.aws.driver.controller;
 
+import com.message.aws.core.model.dto.StatusDTO;
+import com.message.aws.core.model.enums.VideoStatus;
+import com.message.aws.core.port.DatabasePort;
 import com.message.aws.driver.api.FrameFlowApi;
 import com.message.aws.infrastructure.configuration.S3Config;
 import com.message.aws.core.model.domain.VideoMessagePublisher;
 import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.port.AuthenticationPort;
-import com.message.aws.core.port.SNSProcessorPort;
+import com.message.aws.core.port.SNSPublisherPort;
 import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +41,11 @@ public class FrameFlowController implements FrameFlowApi {
 
     private final VideoServiceImpl videoServiceImpl;
 
-    private final SNSProcessorPort snsProcessorPort;
+    private final SNSPublisherPort snsPublisherPort;
 
     private final AuthenticationPort authenticationPort;
+
+    private final DatabasePort databasePort;
 
     private final JwtUtil jwtUtil;
 
@@ -49,12 +55,13 @@ public class FrameFlowController implements FrameFlowApi {
     @Value("${s3.bucket-frames}")
     private String bucketZipName;
 
-    public FrameFlowController(S3Config s3Config, VideoServiceImpl videoServiceImpl, SNSProcessorPort snsProcessorPort, AuthenticationPort authenticationPort, JwtUtil jwtUtil) {
+    public FrameFlowController(S3Config s3Config, VideoServiceImpl videoServiceImpl, SNSPublisherPort snsPublisherPort, AuthenticationPort authenticationPort, JwtUtil jwtUtil, DatabasePort databasePort) {
         this.s3Config = s3Config;
         this.videoServiceImpl = videoServiceImpl;
-        this.snsProcessorPort = snsProcessorPort;
+        this.snsPublisherPort = snsPublisherPort;
         this.authenticationPort = authenticationPort;
         this.jwtUtil = jwtUtil;
+        this.databasePort = databasePort;
 
     }
 
@@ -70,7 +77,12 @@ public class FrameFlowController implements FrameFlowApi {
         VideoMessagePublisher videoMessagePublisher = new VideoMessagePublisher();
         String key = file.getOriginalFilename();
 
-//TODO Cadastrar video no db aqui vai subir para o s3
+        UserVideosDTO userVideosDTO = new UserVideosDTO(null, VideoStatus.PENDING, key, userDTO.getId());
+        UserVideosDTO savedUserVideo = databasePort.createVideo(userVideosDTO);
+
+        StatusDTO statusDTO = new StatusDTO(null, VideoStatus.PENDING, key, Instant.now().toString(), null, userDTO.getId(), savedUserVideo.getId());
+        StatusDTO savedStatusDTO = databasePort.saveOrUpdateVideoStatus(statusDTO);
+
         try {
             CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
                     .bucket(bucketVideoName)
@@ -115,14 +127,16 @@ public class FrameFlowController implements FrameFlowApi {
 
             s3Config.getS3Client().completeMultipartUpload(completeRequest);
 
-            //TODO atualizar video no db aqui vai publicar o video para cortes
+            savedStatusDTO.setStatus(VideoStatus.IN_PROGRESS);
+            savedStatusDTO.setModifiedDate(Instant.now().toString());
+            databasePort.saveOrUpdateVideoStatus(statusDTO);
 
             videoMessagePublisher.setId("1");
             videoMessagePublisher.setEmail(userDTO.getEmail());
             videoMessagePublisher.setUser(userDTO.getUsername());
             videoMessagePublisher.setIntervalSeconds("5");
             videoMessagePublisher.setVideoKeyS3(key);
-            snsProcessorPort.publishMessage(videoMessagePublisher);
+            snsPublisherPort.publishMessage(videoMessagePublisher);
 
             return ResponseEntity.ok("Upload de vídeo realizado com sucesso!");
 
@@ -148,8 +162,6 @@ public class FrameFlowController implements FrameFlowApi {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(getObjectResponse.readAllBytes());
             Resource resource = new InputStreamResource(byteArrayInputStream);
 
-            //TODO Atualizar banco de dados como COMPLETED e com o videoKeyName
-
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, getObjectResponse.response().contentType())
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
@@ -157,7 +169,6 @@ public class FrameFlowController implements FrameFlowApi {
 
         } catch (S3Exception | IOException e) {
             log.error("Erro ao fazer download do arquivo: {}", e.getMessage());
-            //TODO Atualizar banco de dados como ERROR_PROCESSING
 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado");
         }

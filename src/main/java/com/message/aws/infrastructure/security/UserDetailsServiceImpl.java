@@ -1,6 +1,6 @@
 package com.message.aws.infrastructure.security;
 
-import com.message.aws.core.model.entity.User;
+import com.message.aws.core.model.entity.UserEntity;
 import com.message.aws.core.port.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             return user.get();
         }

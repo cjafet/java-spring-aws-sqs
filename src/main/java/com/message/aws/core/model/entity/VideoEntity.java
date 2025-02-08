@@ -17,8 +17,8 @@ public class VideoEntity {
     @Enumerated(EnumType.STRING)
     private VideoStatus videoStatus;
 
-    @Column(name = "url")
-    private String videoUrl;
+    @Column(name = "video-key")
+    private String videoKey;
 
     @Column(name = "user-id")
     private Long userId;

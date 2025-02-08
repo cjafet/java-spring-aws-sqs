@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserVideosDTO {
+public class StatusDTO {
     private Long id;
-    private VideoStatus videoStatus;
+    private VideoStatus status;
     private String videoKey;
+    private String createdDate;
+    private String modifiedDate;
     private Long userId;
+    private Long videoId;
 }

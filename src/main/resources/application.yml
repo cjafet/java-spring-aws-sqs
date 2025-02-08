@@ -1,0 +1,42 @@
+server.port: 8000
+
+spring:
+  application.name: aws
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=public
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        stringtype: unspecified
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_KEY}
+      secret-key: ${AWS_SECRET}
+      token: ${AWS_TOKEN}
+      account-id: 992751745486
+    region:
+      static: us-east-1
+      auto: false
+
+sns:
+  topic: arn:aws:sns:us-east-1:992751745486:video-carregado-topic.fifo
+
+sqs:
+  queue-name-consumer: frameFlowQueue.fifo
+
+S3:
+  bucket-video-original: fiap-video-completo
+  bucket-frames: fiap-zip-video

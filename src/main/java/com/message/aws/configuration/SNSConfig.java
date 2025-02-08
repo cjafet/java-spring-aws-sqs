@@ -10,8 +10,10 @@ import com.amazonaws.services.sns.model.SetTopicAttributesRequest;
 import com.amazonaws.services.sns.model.Topic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.regions.Region;
 
+@Configuration
 public class SNSConfig {
 
     @Value("${cloud.aws.credentials.access-key}")
@@ -31,19 +33,17 @@ public class SNSConfig {
     @Value("${sns.topic}")
     String topic;
 
-    BasicSessionCredentials credentials = new BasicSessionCredentials(accessKeyId, secretAccessKey, token);
-
-    String arn = "arn:aws:sns:" + regionName +":"+accountId+":"+topic;
-
     @Bean
     public AmazonSNS snsClient() {
+        BasicSessionCredentials credentials = new BasicSessionCredentials(accessKeyId, secretAccessKey, token);
+
         AmazonSNS snsClient = AmazonSNSClientBuilder.standard()
                 .withRegion(regionName)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .build();
 
         SetTopicAttributesRequest setTopicAttributesRequest = new SetTopicAttributesRequest()
-                .withTopicArn("arn:aws:sns:" + regionName +":"+accountId+":video-update-status.fifo")
+                .withTopicArn(topic)
                 .withAttributeName("ContentBasedDeduplication")
                 .withAttributeValue("true");
 
@@ -54,14 +54,14 @@ public class SNSConfig {
 
     @Bean
     public String arnTopic() {
-        return arn;
+        return topic;
     }
 
     @Bean(name = "productEventsTopic")
     public Topic snsProductEventsTopic() {
 
         GetTopicAttributesRequest getTopicAttributesRequest = new GetTopicAttributesRequest()
-                .withTopicArn(arn);
+                .withTopicArn(topic);
         GetTopicAttributesResult getTopicAttributesResult = snsClient().getTopicAttributes(getTopicAttributesRequest);
         String topicArn = getTopicAttributesResult.getAttributes().get("TopicArn");
 

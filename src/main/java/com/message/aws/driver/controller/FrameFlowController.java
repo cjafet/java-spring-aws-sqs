@@ -1,10 +1,15 @@
 package com.message.aws.driver.controller;
 
 import com.message.aws.api.FrameFlowApi;
+import com.message.aws.configuration.S3Config;
+import com.message.aws.model.domain.VideoMessagePublisher;
+import com.message.aws.model.dto.UserDTO;
 import com.message.aws.model.dto.UserVideosDTO;
+import com.message.aws.port.AuthenticationPort;
+import com.message.aws.port.SNSProcessorPort;
 import com.message.aws.service.impl.VideoServiceImpl;
+import com.message.aws.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -16,70 +21,128 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Controller
 public class FrameFlowController implements FrameFlowApi {
 
-    @Autowired
-    private S3Client s3Client;
+    private final S3Config s3Config;
 
-    @Autowired
-    private VideoServiceImpl videoServiceImpl;
+    private final VideoServiceImpl videoServiceImpl;
+
+    private final SNSProcessorPort snsProcessorPort;
+
+    private final AuthenticationPort authenticationPort;
+
+    private final JwtUtil jwtUtil;
 
     @Value("${s3.bucket-video-original}")
-    private String BUCKET_NAME;
+    private String bucketVideoName;
 
-    @Override
-    public ResponseEntity<String> uploadFile(MultipartFile file) {
+    @Value("${s3.bucket-frames}")
+    private String bucketZipName;
 
-        //TODO:
-        //1. Anexar token a API de upload
-        //2. Criar uma requisição para o usuario e salvar no banco
-        //3. Upload de video original - FEITO
-        //4. Enviar requisição via SNS
+    public FrameFlowController(S3Config s3Config, VideoServiceImpl videoServiceImpl, SNSProcessorPort snsProcessorPort, AuthenticationPort authenticationPort, JwtUtil jwtUtil) {
+        this.s3Config = s3Config;
+        this.videoServiceImpl = videoServiceImpl;
+        this.snsProcessorPort = snsProcessorPort;
+        this.authenticationPort = authenticationPort;
+        this.jwtUtil = jwtUtil;
 
-       try {
-           s3Client.putObject(request ->
-                           request
-                                   .bucket(BUCKET_NAME)
-                                   .key(file.getOriginalFilename()),
-                   RequestBody.fromBytes(file.getBytes()));
-
-       }catch (Exception ex){
-            log.error("Erro ao fazer upload do arquivo: {}", ex.getMessage());
-            return ResponseEntity.status(500).body("feito upload do arquivo com sucesso");
-       }
-        return ResponseEntity.ok("feito upload do arquivo com sucesso");
     }
 
     @Override
-    public ResponseEntity<Resource> downloadFile() {
-        String fileName = "Batata-frita.jpg";
+    public ResponseEntity<String> uploadFile(MultipartFile file, String authorizationHeader) {
 
-        //TODO
-        //1. Anexar token e id de requisicao na API de download(parametros da requisição)
-        //2. Implementar a consulta do nome do arquivo zip com os frames a partir do id da requisição passada
-        //3. Download de frames do video original - FEITO
+        if (Boolean.TRUE.equals(authenticationPort.validateAuthorizationHeader(authorizationHeader))) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token não fornecido ou inválido");
+        }
 
+        UserDTO userDTO = jwtUtil.getUser(authorizationHeader);
+
+        VideoMessagePublisher videoMessagePublisher = new VideoMessagePublisher();
+        String key = file.getOriginalFilename();
+
+        try {
+            CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
+                    .bucket(bucketVideoName)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
+
+            CreateMultipartUploadResponse createResponse = s3Config.getS3Client().createMultipartUpload(createRequest);
+            String uploadId = createResponse.uploadId();
+
+            List<CompletedPart> completedParts = new ArrayList<>();
+            byte[] fileBytes = file.getBytes();
+            int partSize = 5 * 1024 * 1024;
+            int partNumber = 1;
+
+            for (int i = 0; i < fileBytes.length; i += partSize) {
+                int size = Math.min(partSize, fileBytes.length - i);
+                byte[] part = Arrays.copyOfRange(fileBytes, i, i + size);
+
+                UploadPartRequest uploadPartRequest = UploadPartRequest.builder()
+                        .bucket(bucketVideoName)
+                        .key(key)
+                        .uploadId(uploadId)
+                        .partNumber(partNumber)
+                        .build();
+
+                UploadPartResponse uploadPartResponse = s3Config.getS3Client().uploadPart(uploadPartRequest, RequestBody.fromBytes(part));
+                completedParts.add(CompletedPart.builder()
+                        .partNumber(partNumber)
+                        .eTag(uploadPartResponse.eTag())
+                        .build());
+
+                partNumber++;
+            }
+
+            CompleteMultipartUploadRequest completeRequest = CompleteMultipartUploadRequest.builder()
+                    .bucket(bucketVideoName)
+                    .key(key)
+                    .uploadId(uploadId)
+                    .multipartUpload(mpu -> mpu.parts(completedParts))
+                    .build();
+
+            s3Config.getS3Client().completeMultipartUpload(completeRequest);
+
+            videoMessagePublisher.setId("1");
+            videoMessagePublisher.setEmail(userDTO.getEmail());
+            videoMessagePublisher.setUser(userDTO.getName());
+            videoMessagePublisher.setIntervalSeconds("5");
+            videoMessagePublisher.setVideoKeyS3(key);
+            snsProcessorPort.publishMessage(videoMessagePublisher);
+
+            return ResponseEntity.ok("Upload de vídeo realizado com sucesso!");
+
+        } catch (Exception ex) {
+            log.error("Erro no upload multipart: {}", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao fazer upload do arquivo.");
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<Resource> downloadFile(String videoKeyName, String authorizationHeader) {
+        String fileName = videoKeyName.replace(".mp4", ".zip");
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(BUCKET_NAME)
+                .bucket(bucketZipName)
                 .key(fileName)
                 .build();
         try {
-            ResponseInputStream<GetObjectResponse> getObjectResponse = s3Client.getObject(getObjectRequest);
+            ResponseInputStream<GetObjectResponse> getObjectResponse = s3Config.getS3Client().getObject(getObjectRequest);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(getObjectResponse.readAllBytes());
-            Resource resource = new InputStreamResource(bais);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(getObjectResponse.readAllBytes());
+            Resource resource = new InputStreamResource(byteArrayInputStream);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, getObjectResponse.response().contentType())
@@ -90,7 +153,6 @@ public class FrameFlowController implements FrameFlowApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado");
         }
     }
-
 
 
     //Todo: implementar API nova para listagem de requisicoes de videos por usuario com autenticacao via token

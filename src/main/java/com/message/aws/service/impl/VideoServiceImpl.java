@@ -27,12 +27,12 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<UserVideosDTO> getVideosByUser(Long userId) {
-        List<UserVideosDTO> userVideosDTOS = Collections.EMPTY_LIST;
+        List<UserVideosDTO> userVideosDTOS = Collections.emptyList();
         try {
             List<VideoEntity> videos =  videoRepository.findAllByUserId(userId);
             userVideosDTOS = videos.stream()
                     .map(this::convertToDto)
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (Exception exception) {
             log.error("Erro ao listar vídeos do usuario {}", keyValue("exception", exception.getMessage()));
         }

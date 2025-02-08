@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=public
     username: postgres
-    password: postgres
+    password:
     driver-class-name: org.postgresql.Driver
     hikari:
       data-source-properties:
@@ -15,6 +15,10 @@ spring:
       ddl-auto: create-drop
   main:
     allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
 
 cloud:
   aws:
@@ -28,11 +32,11 @@ cloud:
       auto: false
 
 sns:
-  topic: video-carregado-topic.fifo
+  topic:
 
 sqs:
-  queue-name-consumer: video-status-subscriber-queue.fifo
+  queue-name-consumer:
 
 S3:
-  bucket-video-original: original-video-bucket
-  bucket-frames: frames-video-bucket
+  bucket-video-original:
+  bucket-frames:

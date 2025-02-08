@@ -1,6 +1,5 @@
-package com.message.aws.filter;
+package com.message.aws.security;
 
-import com.message.aws.security.UserDetailsServiceImpl;
 import com.message.aws.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package com.message.aws.configuration;
 
-import com.message.aws.filter.JwtAuthFilter;
+import com.message.aws.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

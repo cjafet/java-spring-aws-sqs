@@ -1,0 +1,151 @@
+package com.message.aws.infrastructure.adapter;
+
+import com.message.aws.core.model.dto.StatusDTO;
+import com.message.aws.core.model.dto.UserDTO;
+import com.message.aws.core.model.dto.UserVideosDTO;
+import com.message.aws.core.model.entity.StatusEntity;
+import com.message.aws.core.model.entity.UserEntity;
+import com.message.aws.core.model.entity.VideoEntity;
+import com.message.aws.core.model.enums.VideoStatus;
+import com.message.aws.core.port.repository.StatusRepository;
+import com.message.aws.core.port.repository.UserRepository;
+import com.message.aws.core.port.repository.VideoRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+public class DatabaseAdapterTest {
+    @InjectMocks
+    DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private StatusRepository statusRepository;
+
+    @Mock
+    private VideoRepository videoRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+
+    private ModelMapper modelMapper;
+
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        modelMapper = new ModelMapper();
+        ReflectionTestUtils.setField(databaseAdapter, "modelMapper", modelMapper);
+    }
+
+    @Test
+    public void testSaveOrUpdateVideoStatus() {
+        // Arrange
+        StatusDTO statusDTO = new StatusDTO();
+        statusDTO.setId(1L);
+        statusDTO.setVideoId(1L);
+        statusDTO.setStatus(VideoStatus.IN_PROGRESS);
+
+        StatusEntity statusEntity = new StatusEntity();
+        statusEntity.setId(1L);
+        statusEntity.setVideoId(1L);
+        statusEntity.setStatus(VideoStatus.IN_PROGRESS);
+
+        when(statusRepository.save(any(StatusEntity.class))).thenReturn(statusEntity);
+
+        // Act
+        StatusDTO savedStatusDTO = databaseAdapter.saveOrUpdateVideoStatus(statusDTO);
+
+        // Assert
+        assertNotNull(savedStatusDTO);
+        assertEquals(1L, savedStatusDTO.getId());
+        assertEquals(VideoStatus.IN_PROGRESS, savedStatusDTO.getStatus());
+    }
+
+
+    @Test
+    public void testSaveOrUpdateVideo() {
+        // Arrange
+        UserVideosDTO userVideosDTO = new UserVideosDTO();
+        userVideosDTO.setId(1L);
+        userVideosDTO.setVideoKey("Exemplo.mp4");
+        userVideosDTO.setUserId(1L);
+
+        VideoEntity videoEntity = new VideoEntity();
+        videoEntity.setId(1L);
+        videoEntity.setVideoKey("Exemplo.mp4");
+        videoEntity.setUserId(1L);
+        when(videoRepository.save(any(VideoEntity.class))).thenReturn(videoEntity);
+
+
+        // Act
+        UserVideosDTO savedUserVideosDTO = databaseAdapter.saveOrUpdateVideo(userVideosDTO);
+
+        // Assert
+        assertNotNull(savedUserVideosDTO);
+        assertEquals(1L, savedUserVideosDTO.getId());
+        assertEquals("Exemplo.mp4", savedUserVideosDTO.getVideoKey());
+        assertEquals(1L, savedUserVideosDTO.getUserId());
+    }
+
+    @Test
+    public void testGetUserByEmail() {
+        // Arrange
+        String email = "usuario@example.com";
+
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        // Act
+        Optional<UserDTO> userDTO = databaseAdapter.getUserByEmail(email);
+
+        // Assert
+        assertTrue(userDTO.isPresent());
+        assertEquals("usuario@example.com", userDTO.get().getEmail());
+    }
+
+    @Test
+    public void testGetStatusByVideoId() {
+        // Arrange
+        Long videoId = 1L;
+
+        StatusEntity statusEntity = new StatusEntity();
+        statusEntity.setVideoId(videoId);
+        when(statusRepository.findByVideoId(videoId)).thenReturn(Optional.of(statusEntity));
+        // Act
+        Optional<StatusDTO> statusDTO = databaseAdapter.getStatusByVideoId(videoId);
+
+        // Assert
+        assertTrue(statusDTO.isPresent());
+        assertEquals(1L, statusDTO.get().getVideoId());
+    }
+
+    @Test
+    public void testGetVideoById() {
+        // Arrange
+        Long videoId = 1L;
+
+        VideoEntity videoEntity = new VideoEntity();
+        videoEntity.setId(videoId);
+        when(videoRepository.findById(videoId)).thenReturn(Optional.of());
+        // Act
+        Optional<UserVideosDTO> userVideosDTO = databaseAdapter.getVideoById(videoId);
+
+        // Assert
+        assertTrue(userVideosDTO.isPresent());
+        assertEquals(1L, userVideosDTO.get().getId());
+    }
+}
+
+

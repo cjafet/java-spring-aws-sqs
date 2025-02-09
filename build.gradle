@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.message'
@@ -19,6 +20,9 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2024.0.0")
+	sonarOrganization = "frame-flow"
+	sonarProjectKey = "upload_frame_flow"
+	sonarHostUrl = "https://sonarcloud.io"
 }
 
 dependencyManagement {
@@ -83,4 +87,24 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+	toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+	}
+}
+
+tasks.register("sonar") {
+	doLast {
+		println "SonarCloud Analysis: ${sonarHostUrl}/dashboard?id=${sonarProjectKey}"
+	}
 }

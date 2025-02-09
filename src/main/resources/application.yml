@@ -26,17 +26,17 @@ cloud:
       access-key: ${AWS_KEY}
       secret-key: ${AWS_SECRET}
       token: ${AWS_TOKEN}
-      account-id: 992751745486
+      account-id: ${ACCOUNT_ID}
     region:
-      static: us-east-1
+      static: ${AWS_REGION}
       auto: false
 
 sns:
-  topic: arn:aws:sns:us-east-1:992751745486:video-carregado-topic.fifo
+  topic: ${SNS_TOPIC}
 
 sqs:
-  queue-name-consumer: frameFlowQueue.fifo
+  queue-name-consumer: ${SQS_QUEUE}
 
 S3:
-  bucket-video-original: fiap-video-completo
-  bucket-frames: fiap-zip-video
+  bucket-video-original: ${S3_BUCKET_VIDEO}
+  bucket-frames: ${S3_BUCKET_ZIP}

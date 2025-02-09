@@ -13,7 +13,7 @@ class DTOTest {
 
         assertEquals(1L, userVideosDTO.getId());
         assertEquals(VideoStatus.COMPLETED, userVideosDTO.getVideoStatus());
-        assertEquals("https://example.com/video.mp4", userVideosDTO.getVideoUrl());
+        assertEquals("https://example.com/video.mp4", userVideosDTO.getVideoKey());
         assertEquals(100L, userVideosDTO.getUserId());
     }
 
@@ -22,12 +22,12 @@ class DTOTest {
         UserVideosDTO userVideosDTO = new UserVideosDTO();
         userVideosDTO.setId(2L);
         userVideosDTO.setVideoStatus(VideoStatus.IN_PROGRESS);
-        userVideosDTO.setVideoUrl("https://example.com/processing.mp4");
+        userVideosDTO.setVideoKey("https://example.com/processing.mp4");
         userVideosDTO.setUserId(200L);
 
         assertEquals(2L, userVideosDTO.getId());
         assertEquals(VideoStatus.IN_PROGRESS, userVideosDTO.getVideoStatus());
-        assertEquals("https://example.com/processing.mp4", userVideosDTO.getVideoUrl());
+        assertEquals("https://example.com/processing.mp4", userVideosDTO.getVideoKey());
         assertEquals(200L, userVideosDTO.getUserId());
     }
 

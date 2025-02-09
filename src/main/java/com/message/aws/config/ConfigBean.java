@@ -29,7 +29,7 @@ public class ConfigBean {
 
     @Bean
     public UploadUseCase getUploadUseCase(){
-        return new UploadUseCase(s3Config,snsPublisherAdapter, databasePort, bucketVideoName);
+        return new UploadUseCase(s3Config,snsPublisherAdapter, databasePort);
     }
 
     @Bean

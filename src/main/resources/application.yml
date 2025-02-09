@@ -12,7 +12,7 @@ spring:
         stringtype: unspecified
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
   main:
     allow-bean-definition-overriding: true
   servlet:

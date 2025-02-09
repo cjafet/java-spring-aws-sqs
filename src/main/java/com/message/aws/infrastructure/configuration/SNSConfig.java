@@ -31,7 +31,7 @@ public class SNSConfig {
     String accountId;
 
     @Value("${sns.topic}")
-    String topic;
+    String topicArn;
 
     @Bean
     public AmazonSNS snsClient() {
@@ -43,7 +43,7 @@ public class SNSConfig {
                 .build();
 
         SetTopicAttributesRequest setTopicAttributesRequest = new SetTopicAttributesRequest()
-                .withTopicArn(topic)
+                .withTopicArn(topicArn)
                 .withAttributeName("ContentBasedDeduplication")
                 .withAttributeValue("true");
 
@@ -54,14 +54,14 @@ public class SNSConfig {
 
     @Bean
     public String arnTopic() {
-        return topic;
+        return topicArn;
     }
 
     @Bean(name = "productEventsTopic")
     public Topic snsProductEventsTopic() {
 
         GetTopicAttributesRequest getTopicAttributesRequest = new GetTopicAttributesRequest()
-                .withTopicArn(topic);
+                .withTopicArn(topicArn);
         GetTopicAttributesResult getTopicAttributesResult = snsClient().getTopicAttributes(getTopicAttributesRequest);
         String topicArn = getTopicAttributesResult.getAttributes().get("TopicArn");
 

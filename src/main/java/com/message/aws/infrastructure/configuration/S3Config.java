@@ -15,9 +15,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class S3Config {
 
-    @Autowired
-    private Environment environment;
-
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKeyId ;
 
@@ -35,8 +32,7 @@ public class S3Config {
         AwsSessionCredentials credentials = AwsSessionCredentials.create(accessKeyId, secretAccessKey, token);
         AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(credentials);
 
-        return S3Client
-                .builder()
+        return S3Client.builder()
                 .region(Region.of(regionName))
                 .credentialsProvider(credentialsProvider)
                 .build();

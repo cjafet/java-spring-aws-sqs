@@ -9,6 +9,7 @@ import com.message.aws.core.port.DatabasePort;
 import com.message.aws.core.port.SNSPublisherPort;
 import com.message.aws.infrastructure.configuration.S3Config;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -30,14 +31,14 @@ public class UploadUseCase {
 
     private final DatabasePort databasePort;
 
+    @Value("${s3.bucket-video-original}")
     private String bucketVideoName;
 
 
-    public UploadUseCase(S3Config s3Config, SNSPublisherPort snsPublisherPort, DatabasePort databasePort, String bucketVideoName) {
+    public UploadUseCase(S3Config s3Config, SNSPublisherPort snsPublisherPort, DatabasePort databasePort) {
         this.s3Config = s3Config;
         this.snsPublisherPort = snsPublisherPort;
         this.databasePort = databasePort;
-        this.bucketVideoName = bucketVideoName;
     }
 
 

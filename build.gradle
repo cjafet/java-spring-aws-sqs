@@ -89,9 +89,9 @@ sonarqube {
 	properties {
 		property "sonar.login", "<token>"
 		property "sonar.exclusions",
-				"**/core/**/," +
-						"**/api/**/," +
-						"**/configuration/**/"
+			"**/core/**/," +
+			"**/api/**/," +
+			"**/configuration/**/"
 	}
 }
 

@@ -30,13 +30,17 @@ public class FrameFlowController implements FrameFlowApi {
 
     private final UploadUseCase uploadUseCase;
 
+    private final AuthenticationPort authenticationPort;
+
     private final JwtUtil jwtUtil;
+
 
 
     public FrameFlowController(VideoServiceImpl videoServiceImpl, AuthenticationPort authenticationPort, JwtUtil jwtUtil, UploadUseCase uploadUseCase, DownloadUseCase downloadUseCase) {
 
         this.downloadUseCase = downloadUseCase;
         this.videoServiceImpl = videoServiceImpl;
+        this.authenticationPort = authenticationPort;
         this.jwtUtil = jwtUtil;
         this.uploadUseCase = uploadUseCase;
 

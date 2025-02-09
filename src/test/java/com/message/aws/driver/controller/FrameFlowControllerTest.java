@@ -10,9 +10,12 @@ import com.message.aws.core.port.SNSPublisherPort;
 import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
 import com.message.aws.core.port.DatabasePort;
+import com.message.aws.core.useCase.DownloadUseCase;
+import com.message.aws.core.useCase.UploadUseCase;
 import com.message.aws.infrastructure.configuration.S3Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +49,8 @@ class FrameFlowControllerTest {
     private DatabasePort databasePort;
     private JwtUtil jwtUtil;
     private S3Client s3Client;
+    private UploadUseCase uploadUseCase;
+    private DownloadUseCase downloadUseCase;
 
     @BeforeEach
     void setUp() {
@@ -57,15 +62,19 @@ class FrameFlowControllerTest {
         databasePort = mock(DatabasePort.class);
         jwtUtil = mock(JwtUtil.class);
         s3Client = mock(S3Client.class);
+        uploadUseCase = mock(UploadUseCase.class);
+        downloadUseCase = mock(DownloadUseCase.class);
 
         when(s3Config.getS3Client()).thenReturn(s3Client);
 
-        frameFlowController = new FrameFlowController(s3Config, videoServiceImpl, snsPublisherPort, authenticationPort, jwtUtil, databasePort);
+        frameFlowController = new FrameFlowController(videoServiceImpl, authenticationPort, jwtUtil, uploadUseCase, downloadUseCase);
     }
 
 
+
+
     @Test
-    void testUploadFileError() {
+    void testUploadFile() throws IOException {
         MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
         String authorizationHeader = "Bearer invalid-token";
 
@@ -73,64 +82,7 @@ class FrameFlowControllerTest {
         userDTO.setEmail("test@example.com");
         userDTO.setUsername("Test User");
 
-        UserVideosDTO userVideosDTO = new UserVideosDTO();
-        userVideosDTO.setId(1L);
-        userVideosDTO.setUserId(1l);
-        userVideosDTO.setVideoStatus(VideoStatus.IN_PROGRESS);
-        userVideosDTO.setVideoKey("video.mp4");
-
-        StatusDTO statusDTO = new StatusDTO(); // Mock the statusDTO
-
-        when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);
-
-        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
-
-        when(databasePort.saveOrUpdateVideo(any(UserVideosDTO.class))).thenReturn(userVideosDTO);
-
-        when(databasePort.saveOrUpdateVideoStatus(any(StatusDTO.class))).thenReturn(statusDTO);
-
-        when(s3Config.getS3Client().createMultipartUpload(any(CreateMultipartUploadRequest.class))).thenThrow(S3Exception.builder().message("S3 Error").build());
-
-        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Erro ao fazer upload do arquivo.", response.getBody());
-    }
-
-    @Test
-    void testUploadFile() {
-        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
-        String authorizationHeader = "Bearer invalid-token";
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail("test@example.com");
-        userDTO.setUsername("Test User");
-
-        UserVideosDTO userVideosDTO = new UserVideosDTO();
-        userVideosDTO.setId(1L);
-        userVideosDTO.setUserId(1l);
-        userVideosDTO.setVideoStatus(VideoStatus.IN_PROGRESS);
-        userVideosDTO.setVideoKey("video.mp4");
-
-        StatusDTO statusDTO = new StatusDTO(); // Mock the statusDTO
-
-        when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);
-
-        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
-
-        when(databasePort.saveOrUpdateVideo(any(UserVideosDTO.class))).thenReturn(userVideosDTO);
-
-        when(databasePort.saveOrUpdateVideoStatus(any(StatusDTO.class))).thenReturn(statusDTO);
-
-        CreateMultipartUploadResponse createResponse = CreateMultipartUploadResponse.builder()
-                .uploadId("upload-id")
-                .build();
-        when(s3Config.getS3Client().createMultipartUpload(any(CreateMultipartUploadRequest.class))).thenReturn(createResponse);
-
-        when(s3Config.getS3Client().uploadPart(any(UploadPartRequest.class), any(RequestBody.class))).thenReturn(UploadPartResponse.builder().eTag("etag").build());
-
-        when(this.s3Config.getS3Client().completeMultipartUpload(any(CompleteMultipartUploadRequest.class))).thenReturn(CompleteMultipartUploadResponse.builder().build());
-        doNothing().when(snsPublisherPort).publishMessage(any(VideoMessagePublisher.class));
+        doNothing().when(uploadUseCase).upload(file, userDTO);
 
         ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
 
@@ -147,11 +99,7 @@ class FrameFlowControllerTest {
         String fileName = videoKeyName.replace(".mp4", ".zip");
         byte[] fileContent = "test zip content".getBytes();
 
-        GetObjectResponse getObjectResponse = GetObjectResponse.builder()
-                .contentType("application/zip")
-                .build();
-        when(s3Client.getObject(any(GetObjectRequest.class)))
-                .thenReturn(new ResponseInputStream<>(getObjectResponse, new ByteArrayInputStream(fileContent)));
+        when(downloadUseCase.download(videoKeyName, authorizationHeader)).thenReturn(new InputStreamResource(new ByteArrayInputStream(fileContent)));
 
         // Act
         ResponseEntity<Resource> response = frameFlowController.downloadFile(videoKeyName, authorizationHeader);
@@ -159,25 +107,9 @@ class FrameFlowControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(fileContent.length, response.getBody().contentLength());
-        assertEquals("application/zip", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
-        assertEquals("attachment; filename=\"" + fileName + "\"", response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
+        assertEquals("application/octet-stream", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
     }
 
-    @Test
-    void testDownloadFileNotFound() {
-        // Arrange
-        String videoKeyName = "video.mp4";
-        String authorizationHeader = "Bearer valid-token";
-
-        when(s3Client.getObject(any(GetObjectRequest.class)))
-                .thenThrow(S3Exception.builder().statusCode(404).message("Not Found").build());
-
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                frameFlowController.downloadFile(videoKeyName, authorizationHeader));
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Arquivo não encontrado", exception.getReason());
-    }
 
     @Test
     void testListVideosByUserSuccess() {

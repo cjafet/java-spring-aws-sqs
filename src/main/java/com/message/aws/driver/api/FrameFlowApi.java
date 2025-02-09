@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/api/v1")
@@ -31,7 +32,7 @@ public interface FrameFlowApi {
                     content = @Content)})
 
     public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile file,
-                                             @RequestHeader("Authorization") String authorizationHeader);
+                                             @RequestHeader("Authorization") String authorizationHeader) throws IOException;
 
     @GetMapping(produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Baixa arquivo zip com os frames do video original")

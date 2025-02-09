@@ -2,6 +2,7 @@ package com.message.aws.infrastructure.security;
 
 import com.message.aws.application.service.JwtServiceImpl;
 import com.message.aws.core.model.entity.UserEntity;
+import com.message.aws.util.TestUtil;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +48,7 @@ class JwtAuthFilterTest {
 
     @Test
     void doFilterInternal() throws ServletException, IOException {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(Long.valueOf(1));
-        userEntity.setUsername("cjafet");
-        userEntity.setEmail("example@test.com");
-        userEntity.setAuthorities(Collections.EMPTY_LIST);
+        UserEntity userEntity = TestUtil.getUserEntity(Long.valueOf(1), "cjafet", "example@test.com");
 
         String token = "abcdefghijklmnopqrstuvxyz";
         String username = "cjafet";

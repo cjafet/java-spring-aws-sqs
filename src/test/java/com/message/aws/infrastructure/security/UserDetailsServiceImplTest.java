@@ -2,6 +2,7 @@ package com.message.aws.infrastructure.security;
 
 import com.message.aws.core.model.entity.UserEntity;
 import com.message.aws.core.port.repository.UserRepository;
+import com.message.aws.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,11 +29,7 @@ class UserDetailsServiceImplTest {
 
     @Test
     void loadUserByUsername() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(Long.valueOf(1));
-        userEntity.setUsername("cjafet");
-        userEntity.setEmail("example@test.com");
-        userEntity.setAuthorities(Collections.EMPTY_LIST);
+        UserEntity userEntity = TestUtil.getUserEntity(Long.valueOf(1), "cjafet", "example@test.com");
 
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(userEntity));
         userDetailsService.loadUserByUsername("cjafet");

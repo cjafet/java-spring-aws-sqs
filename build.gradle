@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.sonarqube' version '6.0.1.5171'
 }
 
 group = 'com.message'
@@ -19,6 +20,9 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2024.0.0")
+	sonarOrganization = "frame-flow"
+	sonarProjectKey = "upload_frame_flow"
+	sonarHostUrl = "https://sonarcloud.io/"
 }
 
 dependencyManagement {
@@ -79,6 +83,16 @@ dependencies {
 	testImplementation 'org.testcontainers:localstack:1.19.3'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+sonarqube {
+	properties {
+		property "sonar.login", "<token>"
+		property "sonar.exclusions",
+				"**/core/**/," +
+						"**/api/**/," +
+						"**/configuration/**/"
+	}
 }
 
 tasks.named('test') {

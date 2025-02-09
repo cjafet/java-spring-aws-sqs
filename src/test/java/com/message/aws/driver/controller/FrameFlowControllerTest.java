@@ -63,6 +63,42 @@ class FrameFlowControllerTest {
         frameFlowController = new FrameFlowController(s3Config, videoServiceImpl, snsPublisherPort, authenticationPort, jwtUtil, databasePort);
     }
 
+<<<<<<< HEAD
+//    @Test
+//    void testUploadFileUnauthorized() {
+//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
+//        String authorizationHeader = "Bearer invalid-token";
+//
+//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
+//
+//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
+//
+//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+//        assertEquals("Token não fornecido ou inválido", response.getBody());
+//    }
+
+//    @Test
+//    void testUploadFileInternalServerError() throws IOException {
+//        // Arrange
+//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
+//        String authorizationHeader = "Bearer valid-token";
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setEmail("test@example.com");
+//        userDTO.setUsername("Test User");
+//
+//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(false);
+//        when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);
+//        when(s3Client.createMultipartUpload(any(CreateMultipartUploadRequest.class)))
+//                .thenThrow(S3Exception.builder().message("S3 Error").build());
+//
+//        // Act
+//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
+//
+//        // Assert
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//        assertEquals("Erro ao fazer upload do arquivo.", response.getBody());
+//    }
+=======
 
     @Test
     void testUploadFileError() {
@@ -138,6 +174,7 @@ class FrameFlowControllerTest {
         assertEquals("Upload de vídeo realizado com sucesso!", response.getBody());
     }
 
+>>>>>>> 0e0a5c45f83124cf5a28509e0f1389dc790a4906
 
     @Test
     void testDownloadFileSuccess() throws IOException {

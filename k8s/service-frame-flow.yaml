@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: upload-frame-flow
+  name: upload-frame-flow
+spec:
+  type: LoadBalancer
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 30792
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: upload-frame-flow
+  sessionAffinity: None

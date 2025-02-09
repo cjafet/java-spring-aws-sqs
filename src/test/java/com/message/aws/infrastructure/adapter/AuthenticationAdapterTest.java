@@ -27,7 +27,6 @@ class AuthenticationAdapterTest {
         assertTrue(authenticationAdapter.validateAuthorizationHeader(validHeader));
     }
 
-<<<<<<< HEAD
 //    @Test
 //    void shouldReturnFalseForExpiredToken() {
 //        String expiredToken = "expired-token";
@@ -37,12 +36,10 @@ class AuthenticationAdapterTest {
 //
 //        assertFalse(authenticationAdapter.validateAuthorizationHeader(expiredHeader));
 //    }
-=======
     @Test
     void shouldReturnFalseForExpiredToken() {
         assertFalse(authenticationAdapter.validateAuthorizationHeader(null));
     }
->>>>>>> 0e0a5c45f83124cf5a28509e0f1389dc790a4906
 
     @Test
     void shouldReturnFalseForInvalidHeaderFormat() {

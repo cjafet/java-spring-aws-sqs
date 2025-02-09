@@ -63,7 +63,6 @@ class FrameFlowControllerTest {
         frameFlowController = new FrameFlowController(s3Config, videoServiceImpl, snsPublisherPort, authenticationPort, jwtUtil, databasePort);
     }
 
-<<<<<<< HEAD
 //    @Test
 //    void testUploadFileUnauthorized() {
 //        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
@@ -98,7 +97,6 @@ class FrameFlowControllerTest {
 //        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 //        assertEquals("Erro ao fazer upload do arquivo.", response.getBody());
 //    }
-=======
 
     @Test
     void testUploadFileError() {
@@ -174,7 +172,6 @@ class FrameFlowControllerTest {
         assertEquals("Upload de vídeo realizado com sucesso!", response.getBody());
     }
 
->>>>>>> 0e0a5c45f83124cf5a28509e0f1389dc790a4906
 
     @Test
     void testDownloadFileSuccess() throws IOException {

@@ -39,6 +39,11 @@ class VideoServiceImplTest {
         videoEntity = new VideoEntity();
         videoEntity.setId(1L);
         videoEntity.setUserId(100L);
+        videoEntity.setVideoKey("Teste de Vídeo");
+
+        userVideosDTO = new UserVideosDTO();
+        userVideosDTO.setId(1L);
+        userVideosDTO.setVideoKey("Teste de Vídeo");
         videoEntity.setVideoKey("Teste_de_Vídeo");
 
         userVideosDTO = new UserVideosDTO();
@@ -58,6 +63,7 @@ class VideoServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
+        assertEquals("Teste de Vídeo", result.get(0).getVideoKey());
         assertEquals("Teste_de_Vídeo", result.get(0).getVideoKey());
 
         verify(videoRepository, times(1)).findAllByUserId(userId);

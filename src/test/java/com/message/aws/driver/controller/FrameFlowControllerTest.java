@@ -70,6 +70,40 @@ class FrameFlowControllerTest {
         frameFlowController = new FrameFlowController(videoServiceImpl, authenticationPort, jwtUtil, uploadUseCase, downloadUseCase);
     }
 
+//    @Test
+//    void testUploadFileUnauthorized() {
+//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
+//        String authorizationHeader = "Bearer invalid-token";
+//
+//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
+//
+//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
+//
+//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+//        assertEquals("Token não fornecido ou inválido", response.getBody());
+//    }
+
+//    @Test
+//    void testUploadFileInternalServerError() throws IOException {
+//        // Arrange
+//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
+//        String authorizationHeader = "Bearer valid-token";
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setEmail("test@example.com");
+//        userDTO.setUsername("Test User");
+//
+//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(false);
+//        when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);
+//        when(s3Client.createMultipartUpload(any(CreateMultipartUploadRequest.class)))
+//                .thenThrow(S3Exception.builder().message("S3 Error").build());
+//
+//        // Act
+//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
+//
+//        // Assert
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//        assertEquals("Erro ao fazer upload do arquivo.", response.getBody());
+//    }
 
 
 

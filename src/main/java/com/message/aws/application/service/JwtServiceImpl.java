@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.message.aws.core.model.entity.UserEntity;
 import com.message.aws.core.port.services.JwtService;
-import com.message.aws.infrastructure.security.TokenPayload;
+import com.message.aws.core.model.dto.TokenPayloadDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String extractUsername(String token) {
         Gson gson = new GsonBuilder().create();
-        TokenPayload payload = gson.fromJson(extractPayload(token), TokenPayload.class);
+        TokenPayloadDTO payload = gson.fromJson(extractPayload(token), TokenPayloadDTO.class);
 
         return payload.getName();
     }

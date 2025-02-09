@@ -27,7 +27,7 @@ class DTOTest {
 
         assertEquals(2L, userVideosDTO.getId());
         assertEquals(VideoStatus.IN_PROGRESS, userVideosDTO.getVideoStatus());
-        assertEquals("processing.mp4", userVideosDTO.getVideoKey());
+        assertEquals("https://example.com/processing.mp4", userVideosDTO.getVideoKey());
         assertEquals(200L, userVideosDTO.getUserId());
     }
 

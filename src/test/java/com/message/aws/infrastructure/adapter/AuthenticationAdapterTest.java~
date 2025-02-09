@@ -24,12 +24,19 @@ class AuthenticationAdapterTest {
         String validToken = "valid-token";
         String validHeader = "Bearer " + validToken;
 
+        when(jwtUtil.isTokenExpired(validToken)).thenReturn(false);
+
         assertTrue(authenticationAdapter.validateAuthorizationHeader(validHeader));
     }
 
     @Test
     void shouldReturnFalseForExpiredToken() {
-        assertFalse(authenticationAdapter.validateAuthorizationHeader(null));
+        String expiredToken = "expired-token";
+        String expiredHeader = "Bearer " + expiredToken;
+
+        when(jwtUtil.isTokenExpired(expiredToken)).thenReturn(true);
+
+        assertFalse(authenticationAdapter.validateAuthorizationHeader(expiredHeader));
     }
 
     @Test

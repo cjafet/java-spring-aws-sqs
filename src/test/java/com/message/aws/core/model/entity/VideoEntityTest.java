@@ -13,22 +13,22 @@ class VideoEntityTest {
         VideoEntity videoEntity = new VideoEntity();
         videoEntity.setId(1L);
         videoEntity.setVideoStatus(VideoStatus.IN_PROGRESS);
-        videoEntity.setVideoUrl("https://example.com/video.mp4");
+        videoEntity.setVideoKey("video.mp4");
         videoEntity.setUserId(100L);
 
         assertEquals(1L, videoEntity.getId());
         assertEquals(VideoStatus.IN_PROGRESS, videoEntity.getVideoStatus());
-        assertEquals("https://example.com/video.mp4", videoEntity.getVideoUrl());
+        assertEquals("video.mp4", videoEntity.getVideoKey());
         assertEquals(100L, videoEntity.getUserId());
     }
 
     @Test
     void testUserVideosDTO_AllFields() {
-        UserVideosDTO userVideosDTO = new UserVideosDTO(2L, VideoStatus.COMPLETED, "https://example.com/processed.mp4", 200L);
+        UserVideosDTO userVideosDTO = new UserVideosDTO(2L, VideoStatus.COMPLETED, "processed.mp4", 200L);
 
         assertEquals(2L, userVideosDTO.getId());
         assertEquals(VideoStatus.COMPLETED, userVideosDTO.getVideoStatus());
-        assertEquals("https://example.com/processed.mp4", userVideosDTO.getVideoUrl());
+        assertEquals("processed.mp4", userVideosDTO.getVideoKey());
         assertEquals(200L, userVideosDTO.getUserId());
     }
 
@@ -37,13 +37,13 @@ class VideoEntityTest {
         VideoEntity video1 = new VideoEntity();
         video1.setId(3L);
         video1.setVideoStatus(VideoStatus.PROCESSING_ERROR);
-        video1.setVideoUrl("https://example.com/error.mp4");
+        video1.setVideoKey("video.mp4");
         video1.setUserId(300L);
 
         VideoEntity video2 = new VideoEntity();
         video2.setId(3L);
         video2.setVideoStatus(VideoStatus.PROCESSING_ERROR);
-        video2.setVideoUrl("https://example.com/error.mp4");
+        video2.setVideoKey("video.mp4");
         video2.setUserId(300L);
 
         assertEquals(video1, video2);

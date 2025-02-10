@@ -41,7 +41,7 @@ public class DownloadUseCaseTest {
         bucketZipName = "bucket-zip-name";
         s3Client = mock(S3Client.class);
 
-        downloadUseCase = new DownloadUseCase(s3Config, bucketZipName);
+        downloadUseCase = new DownloadUseCase(s3Config);
 
         when(s3Config.getS3Client()).thenReturn(s3Client);
     }

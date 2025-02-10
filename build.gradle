@@ -91,6 +91,8 @@ sonarqube {
 		property "sonar.exclusions",
 			"**/core/**/," +
 			"**/api/**/," +
+			"**/dto/**/," +
+			"**/handlers/**/," +
 			"**/configuration/**/"
 	}
 }

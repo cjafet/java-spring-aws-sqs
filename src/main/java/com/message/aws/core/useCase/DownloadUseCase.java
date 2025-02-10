@@ -3,6 +3,7 @@ package com.message.aws.core.useCase;
 import com.message.aws.core.Exception.ResourceNotFoundException;
 import com.message.aws.infrastructure.configuration.S3Config;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,11 @@ public class DownloadUseCase {
 
     private final S3Config s3Config;
 
+    @Value("${s3.bucket-frames}")
     private String bucketZipName;
 
-    public DownloadUseCase(S3Config s3Config,String bucketZipName) {
+    public DownloadUseCase(S3Config s3Config) {
         this.s3Config = s3Config;
-        this.bucketZipName = bucketZipName;
     }
 
     public Resource download(String videoKeyName,String authorizationHeader) {

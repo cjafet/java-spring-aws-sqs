@@ -51,7 +51,7 @@ public class UploadUseCaseTest {
         s3Client = mock(S3Client.class);
         when(s3Config.getS3Client()).thenReturn(s3Client);
 
-        uploadUseCase = new UploadUseCase(s3Config,snsPublisherPort, databasePort, "bucket-video-name");
+        uploadUseCase = new UploadUseCase(s3Config,snsPublisherPort, databasePort);
     }
 
 

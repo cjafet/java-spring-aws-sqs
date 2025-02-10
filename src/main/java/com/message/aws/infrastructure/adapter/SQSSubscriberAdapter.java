@@ -26,14 +26,13 @@ public class SQSSubscriberAdapter implements SQSSubscriberPort {
     }
 
     @Override
-    @SqsListener("${sqs.queue-name-consumer}")
+    @SqsListener("video-status-subscriber-alter-status-queue.fifo")
     public void receiveMessage(Message<String> message) {
         String content = message.getPayload();
         if (content == null) {
             log.error("Received null content from SQS");
             return;
         }
-
 
         try {
             JSONObject snsMessage = new JSONObject(content);

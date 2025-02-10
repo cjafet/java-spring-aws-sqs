@@ -8,3 +8,4 @@ AWS_KEY=<aws_key> AWS_SECRET=<aws_secret> AWS_TOKEN=<aws_token> ./gradlew bootRu
 
 ## Running the Application in debug mode
 AWS_KEY=<aws_key> AWS_SECRET=<aws_secret> AWS_TOKEN=<aws_token> ./gradlew bootRun --debug-jvm
+

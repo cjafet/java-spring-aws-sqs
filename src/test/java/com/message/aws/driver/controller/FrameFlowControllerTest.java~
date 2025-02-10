@@ -70,40 +70,6 @@ class FrameFlowControllerTest {
         frameFlowController = new FrameFlowController(videoServiceImpl, authenticationPort, jwtUtil, uploadUseCase, downloadUseCase);
     }
 
-//    @Test
-//    void testUploadFileUnauthorized() {
-//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
-//        String authorizationHeader = "Bearer invalid-token";
-//
-//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(true);
-//
-//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
-//
-//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-//        assertEquals("Token não fornecido ou inválido", response.getBody());
-//    }
-
-//    @Test
-//    void testUploadFileInternalServerError() throws IOException {
-//        // Arrange
-//        MultipartFile file = new MockMultipartFile("video.mp4", "video.mp4", "video/mp4", "test video content".getBytes());
-//        String authorizationHeader = "Bearer valid-token";
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setEmail("test@example.com");
-//        userDTO.setUsername("Test User");
-//
-//        when(authenticationPort.validateAuthorizationHeader(authorizationHeader)).thenReturn(false);
-//        when(jwtUtil.getUser(authorizationHeader)).thenReturn(userDTO);
-//        when(s3Client.createMultipartUpload(any(CreateMultipartUploadRequest.class)))
-//                .thenThrow(S3Exception.builder().message("S3 Error").build());
-//
-//        // Act
-//        ResponseEntity<String> response = frameFlowController.uploadFile(file, authorizationHeader);
-//
-//        // Assert
-//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-//        assertEquals("Erro ao fazer upload do arquivo.", response.getBody());
-//    }
 
 
 
@@ -142,8 +108,24 @@ class FrameFlowControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(fileContent.length, response.getBody().contentLength());
         assertEquals("application/octet-stream", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
+        assertEquals("attachment; filename=\"" + fileName + "\"", response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
     }
 
+    @Test
+    void testDownloadFileNotFound() {
+        // Arrange
+        String videoKeyName = "video.mp4";
+        String authorizationHeader = "Bearer valid-token";
+
+        when(s3Client.getObject(any(GetObjectRequest.class)))
+                .thenThrow(S3Exception.builder().statusCode(404).message("Not Found").build());
+
+        // Act & Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                frameFlowController.downloadFile(videoKeyName, authorizationHeader));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Arquivo não encontrado", exception.getReason());
+    }
 
     @Test
     void testListVideosByUserSuccess() {

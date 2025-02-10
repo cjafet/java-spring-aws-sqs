@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/**"))
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
                         .anyRequest().permitAll()
                 )

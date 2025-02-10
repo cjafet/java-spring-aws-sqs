@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: upload-frame-flow
-          image: 090111931170.dkr.ecr.us-east-1.amazonaws.com/frameflow-ecr
+          image: 090111931170.dkr.ecr.us-east-1.amazonaws.com/upload-frame-flow
           imagePullPolicy: IfNotPresent
           resources:
             requests:

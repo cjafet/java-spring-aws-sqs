@@ -40,3 +40,17 @@ sqs:
 S3:
   bucket-video-original: ${S3_BUCKET_VIDEO}
   bucket-frames: ${S3_BUCKET_ZIP}
+
+management:
+  endpoints:
+   health:
+    readinessState:
+     enabled: true
+    livenessState:
+     enabled: true
+    probes:
+     enabled: true
+   web:
+    base-path: /manage
+    exposure:
+     include: *

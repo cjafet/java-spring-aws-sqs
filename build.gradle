@@ -88,7 +88,10 @@ dependencies {
 
 sonarqube {
 	properties {
-		property "sonar.login", "<token>"
+		property "sonar.projectKey", "upload_frame_flow"
+		property "sonar.organization", "frame-flow"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.login", "bb0d141b086a1e6cfb9081aef877a4550423a826"
 		property "sonar.exclusions",
 			"**/core/**/," +
 			"**/api/**/," +

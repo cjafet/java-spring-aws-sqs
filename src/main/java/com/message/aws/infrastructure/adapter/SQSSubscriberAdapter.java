@@ -12,12 +12,13 @@ import org.joda.time.Instant;
 import org.json.JSONObject;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Slf4j
-@Component
-public class SQSSubscriberAdapter implements SQSSubscriberPort {
+@Service
+public class SQSSubscriberAdapter  {
 
     private DatabaseAdapter databaseAdapter;
 
@@ -25,7 +26,6 @@ public class SQSSubscriberAdapter implements SQSSubscriberPort {
         this.databaseAdapter = databaseAdapter;
     }
 
-    @Override
     @SqsListener("video-status-subscriber-alter-status-queue.fifo")
     public void receiveMessage(Message<String> message) {
         String content = message.getPayload();

@@ -43,14 +43,14 @@ S3:
 
 management:
   endpoints:
-   health:
-    readinessState:
-     enabled: true
-    livenessState:
-     enabled: true
-    probes:
-     enabled: true
-   web:
-    base-path: /manage
-    exposure:
-     include: *
+    health:
+      readinessState:
+        enabled: true
+      livenessState:
+        enabled: true
+      probes:
+        enabled: true
+    web:
+      base-path: /manage
+      exposure:
+        include: "*"

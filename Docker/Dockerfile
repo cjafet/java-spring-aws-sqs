@@ -9,7 +9,7 @@ WORKDIR /app
 COPY .. .
 
   # Build the project and create an executable JAR file
-RUN mvn clean package -DskipTests
+RUN ./gradlew clean build -x test
 
   # Stage 2: Run the application
 FROM openjdk:21-jdk

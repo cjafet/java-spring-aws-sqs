@@ -18,7 +18,7 @@ FROM openjdk:21-jdk
 WORKDIR /app
 
   # Copy the JAR file from the previous stage
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
   # Expose the application port (adjust if necessary)
 EXPOSE 80

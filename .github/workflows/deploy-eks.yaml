@@ -46,6 +46,7 @@ jobs:
          kubectl delete secret secret-frameflow-upload --ignore-not-found
          kubectl create secret generic secret-frameflow-upload \
             --from-literal=AWS_KEY="${{ secrets.AWS_KEY }}" \
+            --from-literal=AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
             --from-literal=AWS_SECRET="${{ secrets.AWS_SECRET }}" \
             --from-literal=AWS_TOKEN="${{ secrets.AWS_TOKEN }}" \
             --from-literal=ACCOUNT_ID="${{ secrets.ACCOUNT_ID }}" \

@@ -12,4 +12,5 @@ public class AwsApplication {
 		SpringApplication.run(AwsApplication.class, args);
 	}
 
+
 }

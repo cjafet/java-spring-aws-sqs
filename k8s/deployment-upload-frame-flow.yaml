@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: secret-frameflow-upload
                   key: AWS_KEY
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: secret-frameflow-upload
+                  key: AWS_ACCESS_KEY_ID
             - name: AWS_SECRET
               valueFrom:
                 secretKeyRef:

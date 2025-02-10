@@ -13,6 +13,7 @@ services:
       - sql_network
     environment:
       - AWS_KEY=${AWS_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET=${AWS_SECRET}
       - AWS_TOKEN=${AWS_TOKEN}
       - ACCOUNT_ID=${ACCOUNT_ID}

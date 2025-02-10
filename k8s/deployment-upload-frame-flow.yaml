@@ -78,18 +78,18 @@ spec:
                   key: S3_BUCKET_VIDEO
           livenessProbe:
             httpGet:
-              path: /manage/health
+              path: /actuator/health/liveness
               port: 80
               httpHeaders:
                 - name: Custom-Header
                   value: Awesome
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 3
           readinessProbe:
             httpGet:
-              path: /manage/health
+              path: /actuator/health/readiness
               port: 80
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 3
       dnsPolicy: ClusterFirst
       restartPolicy: Always

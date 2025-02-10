@@ -1,9 +1,9 @@
-server.port: 8000
+server.port: 80
 
 spring:
   application.name: aws
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=public
+    url: jdbc:postgresql://database-frameflow.cs9vrmuvo0zo.us-east-1.rds.amazonaws.com:5432/postgres?currentSchema=public
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -42,15 +42,12 @@ S3:
   bucket-frames: ${S3_BUCKET_ZIP}
 
 management:
-  endpoints:
+  endpoint:
     health:
-      readinessState:
-        enabled: true
-      livenessState:
-        enabled: true
       probes:
         enabled: true
+      show-details: always
+  endpoints:
     web:
-      base-path: /manage
       exposure:
-        include: "*"
+        include: health, info, loggers

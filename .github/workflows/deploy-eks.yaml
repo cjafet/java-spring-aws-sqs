@@ -39,7 +39,7 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 090111931170.dkr.ecr.us-east-1.amazonaws.com
           docker push 090111931170.dkr.ecr.us-east-1.amazonaws.com/frameflow-ecr:latest
-          
+
       - name: Kube Secrets
         if: ${{ github.ref_name == 'master' }} && github.event_name == 'push'
         run: |
@@ -54,7 +54,7 @@ jobs:
             --from-literal=SQS_QUEUE=${{ secrets.SQS_QUEUE }} \
             --from-literal=S3_BUCKET_ZIP=${{ secrets.S3_BUCKET_ZIP }} \
             --from-literal=S3_BUCKET_VIDEO=${{ secrets.S3_BUCKET_VIDEO }}
-            
+
       - name: Kube Apply
         if: ${{ github.ref_name == 'master' }} && github.event_name == 'push'
         run: |

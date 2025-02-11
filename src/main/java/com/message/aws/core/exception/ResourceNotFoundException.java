@@ -1,4 +1,4 @@
-package com.message.aws.core.Exception;
+package com.message.aws.core.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

@@ -1,4 +1,4 @@
-package com.message.aws.core.useCase;
+package com.message.aws.core.usecase;
 
 import com.message.aws.core.model.domain.VideoMessagePublisher;
 import com.message.aws.core.model.dto.StatusDTO;
@@ -31,7 +31,7 @@ public class UploadUseCase {
 
     private final DatabasePort databasePort;
 
-    @Value("${s3.bucket-video-original}")
+    @Value("${S3_VIDEO}")
     private String bucketVideoName;
 
 

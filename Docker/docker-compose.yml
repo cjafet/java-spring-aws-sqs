@@ -1,4 +1,3 @@
-
 services:
   web:
     build:
@@ -17,7 +16,7 @@ services:
       - AWS_SECRET=${AWS_SECRET}
       - AWS_TOKEN=${AWS_TOKEN}
       - ACCOUNT_ID=${ACCOUNT_ID}
-      - AWS_REGION=${AWS_REGION}
+      - AWS_REGION="us-east-1"
       - SNS_TOPIC=${SNS_TOPIC}
       - SQS_QUEUE=${SQS_QUEUE}
       - S3_BUCKET_ZIP=${S3_BUCKET_ZIP}

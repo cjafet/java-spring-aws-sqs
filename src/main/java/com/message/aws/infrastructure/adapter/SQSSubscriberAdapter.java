@@ -10,6 +10,7 @@ import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Instant;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -18,15 +19,17 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class SQSSubscriberAdapter  {
+public class SQSSubscriberAdapter implements SQSSubscriberPort {
 
     private DatabaseAdapter databaseAdapter;
 
+    @Autowired
     public SQSSubscriberAdapter(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
     }
 
-    @SqsListener("video-status-subscriber-alter-status-queue.fifo")
+    @Override
+    @SqsListener("${sqs.queue-name-consumer}")
     public void receiveMessage(Message<String> message) {
         String content = message.getPayload();
         if (content == null) {

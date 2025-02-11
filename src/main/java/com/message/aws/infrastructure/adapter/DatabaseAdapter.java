@@ -11,7 +11,6 @@ import com.message.aws.core.port.repository.StatusRepository;
 import com.message.aws.core.port.repository.UserRepository;
 import com.message.aws.core.port.repository.VideoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -19,17 +18,17 @@ import java.util.Optional;
 @Component
 public class DatabaseAdapter implements DatabasePort {
 
-    @Autowired
-    private StatusRepository statusRepository;
+    private final StatusRepository statusRepository;
+    private final VideoRepository videoRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private VideoRepository videoRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public DatabaseAdapter(StatusRepository statusRepository, VideoRepository videoRepository, UserRepository userRepository, ModelMapper modelMapper) {
+        this.statusRepository = statusRepository;
+        this.videoRepository = videoRepository;
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public StatusDTO saveOrUpdateVideoStatus(StatusDTO statusDTO) {
@@ -48,20 +47,18 @@ public class DatabaseAdapter implements DatabasePort {
     @Override
     public Optional<UserDTO> getUserByEmail(String email) {
         Optional<UserEntity> userEntity = userRepository.findByEmail(email);
-        return Optional.ofNullable(modelMapper.map(userEntity.get(), UserDTO.class));
-
+        return userEntity.map(entity -> modelMapper.map(entity, UserDTO.class));
     }
 
     @Override
     public Optional<StatusDTO> getStatusByVideoId(Long videoId) {
         Optional<StatusEntity> statusEntity = statusRepository.findByVideoId(videoId);
-        return Optional.ofNullable(modelMapper.map(statusEntity, StatusDTO.class));
+        return statusEntity.map(entity -> modelMapper.map(entity, StatusDTO.class));
     }
 
     @Override
     public Optional<UserVideosDTO> getVideoById(Long videoId) {
         Optional<VideoEntity> videoEntity = videoRepository.findById(videoId);
-        return Optional.ofNullable(modelMapper.map(videoEntity, UserVideosDTO.class));
+        return videoEntity.map(entity -> modelMapper.map(entity, UserVideosDTO.class));
     }
-
 }

@@ -1,11 +1,8 @@
 package com.message.aws.infrastructure.configuration;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -16,16 +13,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 public class S3Config {
 
     @Value("${cloud.aws.credentials.access-key}")
-    private String accessKeyId ;
+    private String accessKeyId;
 
     @Value("${cloud.aws.credentials.secret-key}")
-    private String secretAccessKey ;
+    private String secretAccessKey;
 
     @Value("${cloud.aws.credentials.token}")
     private String token;
 
-    String regionName = Region.US_EAST_1.toString();
-
+    String regionName = "us-east-1";
 
     @Bean
     public S3Client getS3Client() {
@@ -37,6 +33,4 @@ public class S3Config {
                 .credentialsProvider(credentialsProvider)
                 .build();
     }
-
-
 }

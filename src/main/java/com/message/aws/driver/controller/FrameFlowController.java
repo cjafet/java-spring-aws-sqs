@@ -1,7 +1,7 @@
 package com.message.aws.driver.controller;
 
-import com.message.aws.core.useCase.DownloadUseCase;
-import com.message.aws.core.useCase.UploadUseCase;
+import com.message.aws.core.usecase.DownloadUseCase;
+import com.message.aws.core.usecase.UploadUseCase;
 import com.message.aws.driver.api.FrameFlowApi;
 import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;

@@ -18,17 +18,20 @@ import static net.logstash.logback.argument.StructuredArguments.keyValue;
 @Slf4j
 public class VideoServiceImpl implements VideoService {
 
-    @Autowired
-    private VideoRepository videoRepository;
+    private final VideoRepository videoRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public VideoServiceImpl(VideoRepository videoRepository, ModelMapper modelMapper) {
+        this.videoRepository = videoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<UserVideosDTO> getVideosByUser(Long userId) {
         List<UserVideosDTO> userVideosDTOS = Collections.emptyList();
         try {
-            List<VideoEntity> videos =  videoRepository.findAllByUserId(userId);
+            List<VideoEntity> videos = videoRepository.findAllByUserId(userId);
             userVideosDTOS = videos.stream()
                     .map(this::convertToDto)
                     .toList();

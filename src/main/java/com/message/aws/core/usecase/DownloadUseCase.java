@@ -1,9 +1,8 @@
-package com.message.aws.core.useCase;
+package com.message.aws.core.usecase;
 
-import com.message.aws.core.Exception.ResourceNotFoundException;
+import com.message.aws.core.exception.ResourceNotFoundException;
 import com.message.aws.infrastructure.configuration.S3Config;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,7 @@ public class DownloadUseCase {
 
     private final S3Config s3Config;
 
-    @Value("${s3.bucket-frames}")
-    private String bucketZipName;
+    private String bucketZipName = "frames-video-bucket";
 
     public DownloadUseCase(S3Config s3Config) {
         this.s3Config = s3Config;

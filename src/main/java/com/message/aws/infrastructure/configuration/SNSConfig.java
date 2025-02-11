@@ -11,7 +11,6 @@ import com.amazonaws.services.sns.model.Topic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.regions.Region;
 
 @Configuration
 public class SNSConfig {
@@ -25,13 +24,12 @@ public class SNSConfig {
     @Value("${cloud.aws.credentials.token}")
     private String token;
 
-    String regionName = Region.US_EAST_1.toString();
+    String regionName = "us-east-1";
 
     @Value("${cloud.aws.credentials.account-id}")
     String accountId;
 
-    @Value("${sns.topic}")
-    String topicArn;
+    String topicArn = "arn:aws:sns:us-east-1:090111931170:video-status-topic.fifo";
 
     @Bean
     public AmazonSNS snsClient() {
@@ -52,19 +50,15 @@ public class SNSConfig {
         return snsClient;
     }
 
-    @Bean
-    public String arnTopic() {
-        return topicArn;
-    }
-
     @Bean(name = "productEventsTopic")
     public Topic snsProductEventsTopic() {
 
         GetTopicAttributesRequest getTopicAttributesRequest = new GetTopicAttributesRequest()
                 .withTopicArn(topicArn);
         GetTopicAttributesResult getTopicAttributesResult = snsClient().getTopicAttributes(getTopicAttributesRequest);
-        String topicArn = getTopicAttributesResult.getAttributes().get("TopicArn");
+
+        topicArn = getTopicAttributesResult.getAttributes().get("TopicArn");
+
 
         return new Topic().withTopicArn(topicArn);
-    }
-}
+    }}

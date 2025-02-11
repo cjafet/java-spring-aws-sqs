@@ -1,14 +1,10 @@
-package com.message.aws.core.useCase;
+package com.message.aws.core.usecase;
 
-import com.message.aws.core.Exception.ResourceNotFoundException;
+import com.message.aws.core.exception.ResourceNotFoundException;
 import com.message.aws.infrastructure.configuration.S3Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;

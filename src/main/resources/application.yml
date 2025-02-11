@@ -1,18 +1,20 @@
-server.port: 8787
+server:
+  port: 8787
 
 spring:
-  application.name: aws
+  application:
+    name: aws
   datasource:
-    url: jdbc:postgresql://database-frameflow.cs9vrmuvo0zo.us-east-1.rds.amazonaws.com:5432/postgres?currentSchema=public
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?currentSchema=public
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       data-source-properties:
         stringtype: unspecified
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
   main:
     allow-bean-definition-overriding: true
   servlet:
@@ -37,7 +39,7 @@ sns:
 sqs:
   queue-name-consumer: ${SQS_QUEUE}
 
-S3:
+s3:
   bucket-video-original: ${S3_BUCKET_VIDEO}
   bucket-frames: ${S3_BUCKET_ZIP}
 

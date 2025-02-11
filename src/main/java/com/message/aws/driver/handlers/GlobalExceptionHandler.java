@@ -1,8 +1,8 @@
 package com.message.aws.driver.handlers;
 
 
-import com.message.aws.core.Exception.RequestUnauthorized;
-import com.message.aws.core.Exception.ResourceNotFoundException;
+import com.message.aws.core.exception.RequestUnauthorized;
+import com.message.aws.core.exception.ResourceNotFoundException;
 import com.message.aws.driver.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,9 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    private String DEFAULT_ERROR = "Erro na requisicao, por favor contacte o suporte";
-
 
     @ExceptionHandler(RequestUnauthorized.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizedException(RequestUnauthorized ex, WebRequest request) {
@@ -41,9 +38,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
         log.error("Erro no upload multipart: {}", ex.getMessage());
+        String defaultError = "Erro na requisicao, por favor contacte o suporte";
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                DEFAULT_ERROR,
+                defaultError,
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

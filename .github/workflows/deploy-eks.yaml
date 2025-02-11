@@ -40,20 +40,20 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 090111931170.dkr.ecr.us-east-1.amazonaws.com
           docker push 090111931170.dkr.ecr.us-east-1.amazonaws.com/upload-frame-flow:latest
 
-#      - name: Kube Secrets
-#        if: ${{ github.ref_name == 'master' }} && github.event_name == 'push'
-#        run: |
-#         kubectl delete secret secret-frameflow-upload --ignore-not-found
-#         kubectl create secret generic secret-frameflow-upload \
-#            --from-literal=AWS_KEY="${{ secrets.AWS_KEY }}" \
-#            --from-literal=AWS_SECRET="${{ secrets.AWS_SECRET }}" \
-#            --from-literal=AWS_TOKEN="${{ secrets.AWS_TOKEN }}" \
-#            --from-literal=ACCOUNT_ID="${{ secrets.ACCOUNT_ID }}" \
-#            --from-literal=AWS_REGION="${{ secrets.AWS_REGION }}" \
-#            --from-literal=SNS_TOPIC="${{ secrets.SNS_TOPIC }}" \
-#            --from-literal=SQS_QUEUE=${{ secrets.SQS_QUEUE }} \
-#            --from-literal=S3_BUCKET_ZIP=${{ secrets.S3_BUCKET_ZIP }} \
-#            --from-literal=S3_BUCKET_VIDEO=${{ secrets.S3_BUCKET_VIDEO }}
+      - name: Kube Secrets
+        if: ${{ github.ref_name == 'master' }} && github.event_name == 'push'
+        run: |
+         kubectl delete secret secret-frameflow-upload --ignore-not-found
+         kubectl create secret generic secret-frameflow-upload \
+            --from-literal=AWS_KEY="${{ secrets.AWS_KEY }}" \
+            --from-literal=AWS_SECRET="${{ secrets.AWS_SECRET }}" \
+            --from-literal=AWS_TOKEN="${{ secrets.AWS_TOKEN }}" \
+            --from-literal=ACCOUNT_ID="${{ secrets.ACCOUNT_ID }}" \
+            --from-literal=AWS_REGION="${{ secrets.AWS_REGION }}" \
+            --from-literal=SNS_TOPIC="${{ secrets.SNS_TOPIC }}" \
+            --from-literal=SQS_QUEUE=${{ secrets.SQS_QUEUE }} \
+            --from-literal=S3_BUCKET_ZIP=${{ secrets.S3_BUCKET_ZIP }} \
+            --from-literal=S3_BUCKET_VIDEO=${{ secrets.S3_BUCKET_VIDEO }}
 
       - name: Kube Apply
         if: ${{ github.ref_name == 'master' }} && github.event_name == 'push'

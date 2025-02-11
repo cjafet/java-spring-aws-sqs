@@ -6,7 +6,7 @@ FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
   # Copy the Maven project files to the container
-COPY .. .
+COPY ../ .
 
   # Build the project and create an executable JAR file
 RUN ./gradlew clean build -x test
@@ -30,5 +30,5 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ##Instructions:
 ## From project root:
-##docker build -f Docker/Dockerfile -t 51-burguer-app .
+##docker build -f Docker/Dockerfile -t upload-frame-flow  .
 ##docker-compose -f Docker/docker-compose.yml up

@@ -37,7 +37,6 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Long extractUserId(UserDetails userDetails, String requestURI) {
-        UserEntity userEntity = (UserEntity) userDetails;
         String[] requestPath = requestURI.split("/");
         return Long.parseLong(requestPath[requestPath.length-1]);
     }

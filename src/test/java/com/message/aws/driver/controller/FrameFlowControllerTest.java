@@ -1,7 +1,5 @@
 package com.message.aws.driver.controller;
 
-import com.message.aws.core.model.domain.VideoMessagePublisher;
-import com.message.aws.core.model.dto.StatusDTO;
 import com.message.aws.core.model.dto.UserDTO;
 import com.message.aws.core.model.dto.UserVideosDTO;
 import com.message.aws.core.model.enums.VideoStatus;
@@ -10,8 +8,8 @@ import com.message.aws.core.port.SNSPublisherPort;
 import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
 import com.message.aws.core.port.DatabasePort;
-import com.message.aws.core.useCase.DownloadUseCase;
-import com.message.aws.core.useCase.UploadUseCase;
+import com.message.aws.core.usecase.DownloadUseCase;
+import com.message.aws.core.usecase.UploadUseCase;
 import com.message.aws.infrastructure.configuration.S3Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-import software.amazon.awssdk.core.ResponseInputStream;
-import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

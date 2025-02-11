@@ -1,4 +1,4 @@
-package com.message.aws.core.useCase;
+package com.message.aws.core.usecase;
 
 import com.message.aws.application.service.VideoServiceImpl;
 import com.message.aws.common.utils.JwtUtil;
@@ -10,7 +10,6 @@ import com.message.aws.core.model.enums.VideoStatus;
 import com.message.aws.core.port.AuthenticationPort;
 import com.message.aws.core.port.DatabasePort;
 import com.message.aws.core.port.SNSPublisherPort;
-import com.message.aws.core.useCase.UploadUseCase;
 import com.message.aws.infrastructure.configuration.S3Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
